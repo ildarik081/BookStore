@@ -1,0 +1,175 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\CartRepository;
+use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Корзина
+ */
+#[ORM\Entity(repositoryClass: CartRepository::class)]
+#[ORM\Table(options: ['comment' => 'Корзины пользователей'])]
+#[ORM\HasLifecycleCallbacks]
+class Cart
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore-next-line */
+    private int $id;
+
+    #[ORM\Column(
+        length: 40,
+        options: ['comment' => 'Идентификатор сессии']
+    )]
+    private ?string $sessionId = null;
+
+    #[ORM\Column(
+        type: Types::DATETIME_MUTABLE,
+        options: ['comment' => 'Дата создания корзины']
+    )]
+    private ?\DateTimeInterface $dtCreate = null;
+
+    #[ORM\Column(
+        type: Types::DATETIME_MUTABLE,
+        options: ['comment' => 'Дата обновления корзины']
+    )]
+    private ?\DateTimeInterface $dtUpdate = null;
+
+    #[ORM\OneToMany(mappedBy: 'cart', targetEntity: CartProduct::class)]
+    private Collection $cartProducts;
+
+    public function __construct()
+    {
+        $this->cartProducts = new ArrayCollection();
+    }
+
+    /**
+     * Получить идентификатор корзины
+     *
+     * @return integer
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * Получить идентификатор сессии
+     * 
+     * @return string|null
+     */
+    public function getSessionId(): ?string
+    {
+        return $this->sessionId;
+    }
+
+    /**
+     * Записать идентификатор сессии
+     * 
+     * @param string $sessionId
+     * @return self
+     */
+    public function setSessionId(string $sessionId): self
+    {
+        $this->sessionId = $sessionId;
+
+        return $this;
+    }
+
+    /**
+     * Получить дату создания корзины
+     * 
+     * @return DateTimeInterface|null
+     */
+    public function getDtCreate(): ?DateTimeInterface
+    {
+        return $this->dtCreate;
+    }
+
+    /**
+     * Записать дату создания корзины
+     * 
+     * @param DateTimeInterface $dtCreate
+     * @return self
+     */
+    #[ORM\PrePersist]
+    public function setDtCreate(DateTimeInterface $dtCreate): self
+    {
+        $this->dtCreate = $dtCreate;
+
+        return $this;
+    }
+
+    /**
+     * Получить дату обновления корзины
+     *
+     * @return DateTimeInterface|null
+     */
+    public function getDtUpdate(): ?DateTimeInterface
+    {
+        return $this->dtUpdate;
+    }
+
+    /**
+     * Записать дату обновления корзины
+     *
+     * @param DateTimeInterface $dtUpdate
+     * @return self
+     */
+    #[ORM\PreFlush]
+    public function setDtUpdate(DateTimeInterface $dtUpdate): self
+    {
+        $this->dtUpdate = $dtUpdate;
+
+        return $this;
+    }
+
+    /**
+     * Получить массив товаров в корзине
+     * 
+     * @return Collection<int, CartProduct>
+     */
+    public function getCartProducts(): Collection
+    {
+        return $this->cartProducts;
+    }
+
+    /**
+     * Добавить товар в корзину
+     *
+     * @param CartProduct $cartProduct
+     * @return self
+     */
+    public function addCartProduct(CartProduct $cartProduct): self
+    {
+        if (!$this->cartProducts->contains($cartProduct)) {
+            $this->cartProducts->add($cartProduct);
+            $cartProduct->setCart($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Удалить товар из корзины
+     *
+     * @param CartProduct $cartProduct
+     * @return self
+     */
+    public function removeCartProduct(CartProduct $cartProduct): self
+    {
+        if ($this->cartProducts->removeElement($cartProduct)) {
+            if ($cartProduct->getCart() === $this) {
+                $cartProduct->setCart(null);
+            }
+        }
+
+        return $this;
+    }
+}
