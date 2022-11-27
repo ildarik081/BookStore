@@ -25,3 +25,8 @@ services:
         class: Nyholm\Psr7\Factory\Psr17Factory
 
     JMS\Serializer\Serializer: '@jms_serializer'
+
+    App\DataFixtures\AppFixtures:
+        class: App\DataFixtures\AppFixtures
+        arguments:
+            $workingDir: '%working_dir%'

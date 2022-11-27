@@ -14,7 +14,6 @@
     "doctrine/orm": "^2.11",
     "gam6itko/ozon-seller": "^0.8.11",
     "jms/serializer-bundle": "^4.0",
-    "nelmio/api-doc-bundle": "^4.10",
     "nyholm/psr7": "^1.5",
     "psr/http-client": "^1.0",
     "sensio/framework-extra-bundle": "^6.2",
