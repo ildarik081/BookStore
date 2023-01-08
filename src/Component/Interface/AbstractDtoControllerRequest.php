@@ -3,18 +3,15 @@
 namespace App\Component\Interface;
 
 use JMS\Serializer\Annotation;
-use App\Dto\JwtInfoDto;
-use OpenApi\Annotations as OA;
 
 abstract class AbstractDtoControllerRequest extends AbstractDto
 {
     /**
-     * Информация для объекта берется из заголовка authorization
+     * Сессия пользователя
      *
-     * @var JwtInfoDto|null
-     * @Annotation\Type("App\Dto\JwtInfoDto")
-     * @Annotation\SerializedName("jwtInfo")
-     * @OA\Property(readOnly=true)
+     * @var string
+     * @Annotation\Type("string")
+     * @Annotation\SerializedName("session")
      */
-    public ?JwtInfoDto $jwtInfo = null;
+    public string $session;
 }
