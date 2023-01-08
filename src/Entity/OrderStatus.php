@@ -44,6 +44,16 @@ class OrderStatus
     ]
     private ?string $description = null;
 
+    #[
+        ORM\Column(
+            type: Types::STRING,
+            length: 10,
+            nullable: false,
+            options: ['comment' => 'Код статуса']
+        )
+    ]
+    private ?string $code = null;
+
     /**
      * Получить идентификатор статуса
      *
@@ -96,6 +106,29 @@ class OrderStatus
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Получить код статуса
+     *
+     * @return string|null
+     */
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    /**
+     * Записать код статуса
+     *
+     * @param string $code
+     * @return self
+     */
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
 
         return $this;
     }

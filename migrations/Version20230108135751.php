@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230108135030 extends AbstractMigration
+final class Version20230108135751 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -19,11 +19,7 @@ final class Version20230108135030 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('CREATE SEQUENCE cart_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE SEQUENCE cart_product_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE SEQUENCE "order_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE SEQUENCE order_status_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE SEQUENCE product_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE cart (id INT NOT NULL, session_id VARCHAR(40) NOT NULL, dt_create TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, dt_update TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON TABLE cart IS \'Корзины пользователей\'');
         $this->addSql('COMMENT ON COLUMN cart.id IS \'Идентификатор корзины\'');
@@ -47,11 +43,12 @@ final class Version20230108135030 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN "order".total_price IS \'Итоговая стоимоть заказа\'');
         $this->addSql('COMMENT ON COLUMN "order".email IS \'Email получателя\'');
         $this->addSql('COMMENT ON COLUMN "order".dt_create IS \'Дата создания заказа\'');
-        $this->addSql('CREATE TABLE order_status (id INT NOT NULL, value VARCHAR(30) NOT NULL, description VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE order_status (id INT NOT NULL, value VARCHAR(30) NOT NULL, description VARCHAR(255) DEFAULT NULL, code VARCHAR(10) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON TABLE order_status IS \'Справочник статусов заказа\'');
         $this->addSql('COMMENT ON COLUMN order_status.id IS \'Идентификатор статуса заказа\'');
         $this->addSql('COMMENT ON COLUMN order_status.value IS \'Значение\'');
         $this->addSql('COMMENT ON COLUMN order_status.description IS \'Описание\'');
+        $this->addSql('COMMENT ON COLUMN order_status.code IS \'Код статуса\'');
         $this->addSql('CREATE TABLE product (id INT NOT NULL, price DOUBLE PRECISION NOT NULL, title VARCHAR(255) NOT NULL, description TEXT DEFAULT NULL, author VARCHAR(180) DEFAULT NULL, image VARCHAR(255) DEFAULT NULL, url VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX product_titlex ON product (title)');
         $this->addSql('COMMENT ON TABLE product IS \'Товары\'');
@@ -69,11 +66,8 @@ final class Version20230108135030 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->addSql('DROP SEQUENCE cart_id_seq CASCADE');
-        $this->addSql('DROP SEQUENCE cart_product_id_seq CASCADE');
-        $this->addSql('DROP SEQUENCE "order_id_seq" CASCADE');
-        $this->addSql('DROP SEQUENCE order_status_id_seq CASCADE');
-        $this->addSql('DROP SEQUENCE product_id_seq CASCADE');
+        // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE cart_product DROP CONSTRAINT FK_2890CCAA4584665A');
         $this->addSql('ALTER TABLE cart_product DROP CONSTRAINT FK_2890CCAA1AD5CDBF');
         $this->addSql('ALTER TABLE "order" DROP CONSTRAINT FK_F52993986BF700BD');

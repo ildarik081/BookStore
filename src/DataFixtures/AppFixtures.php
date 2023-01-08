@@ -2,14 +2,13 @@
 
 namespace App\DataFixtures;
 
+use App\Component\Utils\Aliases;
 use App\Component\Utils\Utils;
+use App\Entity\OrderStatus;
 use App\Entity\Product;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-/**
- * Фикстуры для наполения товаров
- */
 class AppFixtures extends Fixture
 {
     public function __construct(private readonly string $workingDir)
@@ -20,6 +19,16 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        foreach (Aliases::ORDER_STATUSES as $status) {
+            $orderStatusEntity = new OrderStatus();
+            $orderStatusEntity
+                ->setValue($status['value'])
+                ->setDescription($status['description'])
+                ->setCode($status['code']);
+
+            $manager->persist($orderStatusEntity);
+        }
+
         $products = Utils::convertCsvToArray($this->workingDir . self::SVG_FILE_PATH);
 
         foreach ($products as $product) {
@@ -34,7 +43,7 @@ class AppFixtures extends Fixture
 
             $manager->persist($productEntity);
         }
-        
+
         $manager->flush();
     }
 }
