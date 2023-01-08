@@ -2,9 +2,13 @@
 
 namespace App\Service;
 
+use App\Component\Factory\EntityFactory;
 use App\Component\Factory\SimpleResponsFactory;
 use App\Dto\ControllerRequest\ProductListRequest;
+use App\Dto\ControllerRequest\ProductRequest;
+use App\Dto\ControllerResponse\ProductResponse;
 use App\Dto\ControllerResponse\ProductListResponse;
+use App\Dto\Product;
 use App\Repository\ProductRepository;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
@@ -36,5 +40,27 @@ class ProductService
             );
 
         return SimpleResponsFactory::createProductListResponse($products);
+    }
+
+    /**
+     * Добавить товар
+     *
+     * @param ProductRequest $request
+     * @return Product
+     */
+    public function addProduct(ProductRequest $request): Product
+    {
+        $product = EntityFactory::createProduct(
+            $request->price,
+            $request->title,
+            $request->url,
+            $request->description,
+            $request->author,
+            $request->image
+        );
+
+        $this->productRepository->save($product, true);
+
+        return SimpleResponsFactory::createProduct($product);
     }
 }

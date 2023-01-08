@@ -2,9 +2,10 @@
 
 namespace App\Dto;
 
+use App\Component\Interface\Controller\ControllerResponseInterface;
 use JMS\Serializer\Annotation;
 
-class Product
+class Product implements ControllerResponseInterface
 {
     /**
      * Идентификатор товара
@@ -28,7 +29,7 @@ class Product
      * Наименование товара
      *
      * @var string|null
-     * @Annotation\Type("float")
+     * @Annotation\Type("string")
      * @Annotation\SerializedName("title")
      */
     public ?string $title = null;

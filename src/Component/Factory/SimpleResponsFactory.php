@@ -3,6 +3,7 @@
 namespace App\Component\Factory;
 
 use App\Dto\ControllerResponse\ProductListResponse;
+use App\Dto\ControllerResponse\ProductResponse;
 use App\Dto\Product as DtoProduct;
 use App\Entity\Product;
 
@@ -21,6 +22,24 @@ class SimpleResponsFactory
     }
 
     /**
+     * @param Product $product
+     * @return DtoProduct
+     */
+    public static function createProduct(Product $product): DtoProduct
+    {
+        $productDto = new DtoProduct();
+        $productDto->id = $product->getId();
+        $productDto->price = $product->getPrice();
+        $productDto->title = $product->getTitle();
+        $productDto->description = $product->getDescription();
+        $productDto->author = $product->getAuthor();
+        $productDto->image = $product->getImage();
+        $productDto->url = $product->getUrl();
+
+        return $productDto;
+    }
+
+    /**
      * @param Product[] $products
      * @return DtoProduct[]
      */
@@ -33,23 +52,5 @@ class SimpleResponsFactory
         }
 
         return $result;
-    }
-
-    /**
-     * @param Product $product
-     * @return DtoProduct
-     */
-    private static function createProduct(Product $product): DtoProduct
-    {
-        $productDto = new DtoProduct();
-        $productDto->id = $product->getId();
-        $productDto->price = $product->getPrice();
-        $productDto->title = $product->getTitle();
-        $productDto->description = $product->getDescription();
-        $productDto->author = $product->getAuthor();
-        $productDto->image = $product->getImage();
-        $productDto->url = $product->getUrl();
-
-        return $productDto;
     }
 }

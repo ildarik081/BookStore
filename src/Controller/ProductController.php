@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Dto\ControllerRequest\BaseDtoRequest;
 use App\Dto\ControllerRequest\ProductListRequest;
+use App\Dto\ControllerRequest\ProductRequest;
 use App\Dto\ControllerResponse\BaseDtoResponse;
 use App\Dto\ControllerResponse\ProductListResponse;
+use App\Dto\Product;
 use App\Service\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -59,22 +61,22 @@ class ProductController extends AbstractController
      * Добавить товар
      *
      * @OA\RequestBody(
-     *    description="",
-     *    @Model(type=BaseDtoRequest::class)
+     *    description="Данные о товаре",
+     *    @Model(type=ProductRequest::class)
      * )
      * @OA\Response(
      *      response=200,
-     *      description="",
-     *      @Model(type=BaseDtoResponse::class)
+     *      description="Добавленный товар",
+     *      @Model(type=Product::class)
      * )
      * @OA\Tag(name="Product")
-     * @param BaseDtoRequest $request
-     * @return BaseDtoResponse
+     * @param ProductRequest $request
+     * @return Product
      */
     #[Route('/add', name: 'add', methods: ['POST'])]
-    public function add(BaseDtoRequest $request): BaseDtoResponse
+    public function add(ProductRequest $request): Product
     {
-        return new BaseDtoResponse();
+        return $this->productService->addProduct($request);
     }
 
     /**
