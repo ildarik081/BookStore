@@ -54,7 +54,6 @@ class RequestDtoResolver implements ArgumentValueResolverInterface
 
         /** @var AbstractDtoControllerRequest $result */
         $result = $this->serializer->deserialize($data, $argument->getType(), 'json');
-        /** @phpstan-ignore-next-line  */
         $result->session = $session;
 
         yield $result;
