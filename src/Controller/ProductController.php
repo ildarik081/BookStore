@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Dto\ControllerRequest\BaseDtoRequest;
+use App\Dto\ControllerRequest\ProductListRequest;
 use App\Dto\ControllerResponse\BaseDtoResponse;
+use App\Dto\ControllerResponse\ProductListResponse;
+use App\Service\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
@@ -13,25 +16,43 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 class ProductController extends AbstractController
 {
     /**
+     * @param ProductService $productService
+     */
+    public function __construct(private readonly ProductService $productService)
+    {
+    }
+
+    /**
      * Список товаров
      *
-     * @OA\RequestBody(
-     *    description="",
-     *    @Model(type=BaseDtoRequest::class)
-     * )
+     * @OA\Parameter(
+     *      in="query",
+     *      description="Сортировка (ASC, DESC)",
+     *      name="orderBy"
+     * ),
+     * @OA\Parameter(
+     *      in="query",
+     *      description="Лимит",
+     *      name="limit"
+     * ),
+     * @OA\Parameter(
+     *      in="query",
+     *      description="Смещение",
+     *      name="offset"
+     * ),
      * @OA\Response(
      *      response=200,
-     *      description="",
-     *      @Model(type=BaseDtoResponse::class)
+     *      description="Список товаров",
+     *      @Model(type=ProductListResponse::class)
      * )
      * @OA\Tag(name="Product")
-     * @param BaseDtoRequest $request
-     * @return BaseDtoResponse
+     * @param ProductListRequest $request
+     * @return ProductListResponse
      */
     #[Route('/list', name: 'list', methods: ['GET'])]
-    public function list(BaseDtoRequest $request): BaseDtoResponse
+    public function list(ProductListRequest $request): ProductListResponse
     {
-        return new BaseDtoResponse();
+        return $this->productService->getProductList($request);
     }
 
     /**

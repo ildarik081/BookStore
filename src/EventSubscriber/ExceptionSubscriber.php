@@ -30,7 +30,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         );
     }
 
-    #[ArrayShape(['kernel.exception' => "string"])] public static function getSubscribedEvents(): array
+    #[ArrayShape(['kernel.exception' => 'string'])] public static function getSubscribedEvents(): array
     {
         return [
             'kernel.exception' => 'onKernelException',

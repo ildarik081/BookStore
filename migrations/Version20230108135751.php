@@ -19,7 +19,6 @@ final class Version20230108135751 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE cart (id INT NOT NULL, session_id VARCHAR(40) NOT NULL, dt_create TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, dt_update TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON TABLE cart IS \'Корзины пользователей\'');
         $this->addSql('COMMENT ON COLUMN cart.id IS \'Идентификатор корзины\'');
@@ -66,8 +65,6 @@ final class Version20230108135751 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE cart_product DROP CONSTRAINT FK_2890CCAA4584665A');
         $this->addSql('ALTER TABLE cart_product DROP CONSTRAINT FK_2890CCAA1AD5CDBF');
         $this->addSql('ALTER TABLE "order" DROP CONSTRAINT FK_F52993986BF700BD');
