@@ -20,44 +20,71 @@ class Order
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    /** @phpstan-ignore-next-line */
-    private int $id;
+    #[
+        ORM\Column(
+            type: Types::INTEGER,
+            nullable: false,
+            options: ['comment' => 'Идентификатор заказа']
+        )
+    ]
+    private ?int $id = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(
-        nullable: false,
-        options: ['comment' => 'Связь со статусами']
-    )]
+    #[
+        ORM\JoinColumn(
+            nullable: false,
+            options: ['comment' => 'Связь со статусами']
+        )
+    ]
     private ?OrderStatus $status = null;
 
-    #[ORM\Column(
-        length: 40,
-        options: ['comment' => 'Идентификатор сессии']
-    )]
+    #[
+        ORM\Column(
+            type: Types::STRING,
+            nullable: false,
+            length: 40,
+            options: ['comment' => 'Идентификатор сессии']
+        )
+    ]
     private ?string $sessionId = null;
 
-    #[ORM\Column(options: ['comment' => 'Итоговая стоимоть заказа'])]
+    #[
+        ORM\Column(
+            type: Types::FLOAT,
+            nullable: false,
+            options: [
+                'comment' => 'Итоговая стоимоть заказа',
+                'default' => 0
+                ]
+        )
+    ]
     private ?float $totalPrice = null;
 
-    #[ORM\Column(
-        length: 180,
-        options: ['comment' => 'Email получателя']
-    )]
+    #[
+        ORM\Column(
+            type: Types::STRING,
+            nullable: true,
+            length: 180,
+            options: ['comment' => 'Email получателя']
+        )
+    ]
     private ?string $email = null;
 
-    #[ORM\Column(
-        type: Types::DATETIME_MUTABLE,
-        options: ['comment' => 'Дата создания заказа']
-    )]
+    #[
+        ORM\Column(
+            type: Types::DATETIME_MUTABLE,
+            nullable: false,
+            options: ['comment' => 'Дата создания заказа']
+        )
+    ]
     private ?DateTimeInterface $dtCreate = null;
 
     /**
      * Получить идентификатор заказа
      *
-     * @return integer
+     * @return integer|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

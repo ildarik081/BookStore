@@ -8,57 +8,84 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\Table(options: ['comment' => 'Товары'])]
+#[ORM\Index(name: 'product_titlex', columns: ['title'])]
 class Product
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    /** @phpstan-ignore-next-line */
-    private int $id;
+    #[
+        ORM\Column(
+            type: Types::INTEGER,
+            nullable: false,
+            options: ['comment' => 'Идентификатор товара']
+        )
+    ]
+    private ?int $id = null;
 
-    #[ORM\Column(options: ['comment' => 'Стоимость товара'])]
+    #[
+        ORM\Column(
+            type: Types::FLOAT,
+            nullable: false,
+            options: ['comment' => 'Стоимость товара']
+        )
+    ]
     private ?float $price = null;
 
-    #[ORM\Column(
-        length: 255,
-        options: ['comment' => 'Наименование товара']
-    )]
+    #[
+        ORM\Column(
+            type: Types::STRING,
+            length: 255,
+            nullable: false,
+            options: ['comment' => 'Наименование товара']
+        )
+    ]
     private string $title;
 
-    #[ORM\Column(
-        type: Types::TEXT,
-        nullable: true,
-        options: ['comment' => 'Описание товара']
-    )]
+    #[
+        ORM\Column(
+            type: Types::TEXT,
+            nullable: true,
+            options: ['comment' => 'Описание товара']
+        )
+    ]
     private ?string $description = null;
 
-    #[ORM\Column(
-        length: 180,
-        nullable: true,
-        options: ['comment' => 'Автор']
-    )]
+    #[
+        ORM\Column(
+            type: Types::STRING,
+            length: 180,
+            nullable: true,
+            options: ['comment' => 'Автор']
+        )
+    ]
     private ?string $author = null;
 
-    #[ORM\Column(
-        length: 255,
-        nullable: true,
-        options: ['comment' => 'Ссылка на изображение товара']
-    )]
+    #[
+        ORM\Column(
+            type: Types::STRING,
+            length: 255,
+            nullable: true,
+            options: ['comment' => 'Ссылка на изображение товара']
+        )
+    ]
     private ?string $image = null;
 
-    #[ORM\Column(
-        length: 255,
-        nullable: true,
-        options: ['comment' => 'Ссылка для скачивания']
-    )]
+    #[
+        ORM\Column(
+            type: Types::STRING,
+            length: 255,
+            nullable: false,
+            options: ['comment' => 'Ссылка для скачивания']
+        )
+    ]
     private ?string $url = null;
 
     /**
-     * Получить идентификатор корзины
+     * Получить идентификатор товара
      *
-     * @return integer
+     * @return integer|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -89,9 +116,9 @@ class Product
     /**
      * Получить наименование товара
      *
-     * @return string
+     * @return string|null
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -191,10 +218,10 @@ class Product
     /**
      * Записать ссылку для скачивания
      *
-     * @param string|null $url
+     * @param string $url
      * @return self
      */
-    public function setUrl(?string $url): self
+    public function setUrl(string $url): self
     {
         $this->url = $url;
 

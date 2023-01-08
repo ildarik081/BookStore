@@ -19,27 +19,42 @@ class Cart
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    /** @phpstan-ignore-next-line */
-    private int $id;
+    #[
+        ORM\Column(
+            type: Types::INTEGER,
+            nullable: false,
+            options: ['comment' => 'Идентификатор корзины']
+        )
+    ]
+    private ?int $id = null;
 
-    #[ORM\Column(
-        length: 40,
-        options: ['comment' => 'Идентификатор сессии']
-    )]
+    #[
+        ORM\Column(
+            type: Types::STRING,
+            nullable: false,
+            length: 40,
+            options: ['comment' => 'Идентификатор сессии']
+        )
+    ]
     private ?string $sessionId = null;
 
-    #[ORM\Column(
-        type: Types::DATETIME_MUTABLE,
-        options: ['comment' => 'Дата создания корзины']
-    )]
-    private ?\DateTimeInterface $dtCreate = null;
+    #[
+        ORM\Column(
+            type: Types::DATETIME_MUTABLE,
+            nullable: false,
+            options: ['comment' => 'Дата создания корзины']
+        )
+    ]
+    private ?DateTimeInterface $dtCreate = null;
 
-    #[ORM\Column(
-        type: Types::DATETIME_MUTABLE,
-        options: ['comment' => 'Дата обновления корзины']
-    )]
-    private ?\DateTimeInterface $dtUpdate = null;
+    #[
+        ORM\Column(
+            type: Types::DATETIME_MUTABLE,
+            nullable: false,
+            options: ['comment' => 'Дата обновления корзины']
+        )
+    ]
+    private ?DateTimeInterface $dtUpdate = null;
 
     #[ORM\OneToMany(mappedBy: 'cart', targetEntity: CartProduct::class)]
     private Collection $cartProducts;
@@ -52,9 +67,9 @@ class Cart
     /**
      * Получить идентификатор корзины
      *
-     * @return integer
+     * @return integer|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

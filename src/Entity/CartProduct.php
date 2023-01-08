@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CartProductRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,9 +15,25 @@ class CartProduct
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    /** @phpstan-ignore-next-line */
-    private int $id;
+    #[
+        ORM\Column(
+            type: Types::INTEGER,
+            nullable: false,
+            options: ['comment' => 'Идентификатор товара в корзине']
+        )
+    ]
+    private ?int $id = null;
+
+    #[
+        ORM\Column(
+            nullable: false,
+            options: [
+                'comment' => 'Количество товаров',
+                'default' => 0
+            ]
+        )
+    ]
+    private int $quantity = 0;
 
     #[ORM\ManyToOne(inversedBy: 'cartProducts')]
     private ?Product $product = null;
@@ -24,17 +41,37 @@ class CartProduct
     #[ORM\ManyToOne(inversedBy: 'cartProducts')]
     private ?Cart $cart = null;
 
-    #[ORM\Column(options: ['comment' => 'Количество товаров'])]
-    private ?int $quantity = null;
-
     /**
      * Получить идентификатор корзины
      *
-     * @return integer
+     * @return integer|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * Получить количество товаров
+     *
+     * @return integer
+     */
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * Записать количество товаров
+     *
+     * @param integer $quantity
+     * @return self
+     */
+    public function setQuantity(int $quantity): self
+    {
+        $this->quantity = $quantity;
+
+        return $this;
     }
 
     /**
@@ -79,29 +116,6 @@ class CartProduct
     public function setCart(?Cart $cart): self
     {
         $this->cart = $cart;
-
-        return $this;
-    }
-
-    /**
-     * Получить количество товаров
-     *
-     * @return integer|null
-     */
-    public function getQuantity(): ?int
-    {
-        return $this->quantity;
-    }
-
-    /**
-     * Записать количество товаров
-     *
-     * @param integer $quantity
-     * @return self
-     */
-    public function setQuantity(int $quantity): self
-    {
-        $this->quantity = $quantity;
 
         return $this;
     }

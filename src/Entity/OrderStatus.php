@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\OrderStatusRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,27 +15,39 @@ class OrderStatus
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    /** @phpstan-ignore-next-line */
-    private int $id;
+    #[
+        ORM\Column(
+            type: Types::INTEGER,
+            nullable: false,
+            options: ['comment' => 'Идентификатор статуса заказа']
+        )
+    ]
+    private ?int $id = null;
 
-    #[ORM\Column(
-        length: 30,
-        options: ['comment' => 'Значение']
-    )]
-    private string $value;
+    #[
+        ORM\Column(
+            type: Types::STRING,
+            length: 30,
+            nullable: false,
+            options: ['comment' => 'Значение']
+        )
+    ]
+    private ?string $value = null;
 
-    #[ORM\Column(
-        length: 255,
-        nullable: true,
-        options: ['comment' => 'Описание']
-    )]
+    #[
+        ORM\Column(
+            type: Types::STRING,
+            length: 255,
+            nullable: true,
+            options: ['comment' => 'Описание']
+        )
+    ]
     private ?string $description = null;
 
     /**
      * Получить идентификатор статуса
      *
-     * @return integer
+     * @return integer|null
      */
     public function getId(): ?int
     {
@@ -44,9 +57,9 @@ class OrderStatus
     /**
      * Получить значение статуса
      *
-     * @return string
+     * @return string|null
      */
-    public function getValue(): string
+    public function getValue(): ?string
     {
         return $this->value;
     }
