@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Component\Exception\ProductException;
+use App\Component\Exception\ValidatorException;
 use App\Component\Utils\ProductDtoValidator;
 use App\Dto\ControllerRequest\BaseDtoRequest;
 use App\Dto\ControllerRequest\ProductListRequest;
@@ -73,10 +75,13 @@ class ProductController extends AbstractController
      * @OA\Tag(name="Product")
      * @param ProductRequest $request
      * @return Product
+     * @throws ValidatorException
      */
     #[Route('/add', name: 'add', methods: ['POST'])]
     public function add(ProductRequest $request): Product
     {
+        ProductDtoValidator::validateProductRequest($request);
+
         return $this->productService->addProduct($request);
     }
 
@@ -97,6 +102,8 @@ class ProductController extends AbstractController
      * @OA\Tag(name="Product")
      * @param ProductRequest $request
      * @return Product
+     * @throws ValidatorException
+     * @throws ProductException
      */
     #[Route('/edit', name: 'edit', methods: ['PUT'])]
     public function edit(ProductRequest $request): Product
@@ -110,8 +117,8 @@ class ProductController extends AbstractController
      * Удалить товар
      *
      * @OA\RequestBody(
-     *    description="",
-     *    @Model(type=BaseDtoRequest::class)
+     *    description="Данные о товаре (можно передать только id)",
+     *    @Model(type=ProductRequest::class)
      * )
      * @OA\Response(
      *      response=200,
@@ -122,8 +129,8 @@ class ProductController extends AbstractController
      * @param BaseDtoRequest $request
      * @return BaseDtoResponse
      */
-    #[Route('/delete/{id}', name: 'delete', methods: ['DELETE'])]
-    public function delete(BaseDtoRequest $request): BaseDtoResponse
+    #[Route('/delete', name: 'delete', methods: ['DELETE'])]
+    public function delete(ProductRequest $request): BaseDtoResponse
     {
         return new BaseDtoResponse();
     }

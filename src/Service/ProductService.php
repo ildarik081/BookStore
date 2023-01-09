@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Component\Builder\ProductBuilder;
+use App\Component\Exception\ProductException;
 use App\Component\Factory\EntityFactory;
 use App\Component\Factory\SimpleResponsFactory;
 use App\Dto\ControllerRequest\ProductListRequest;
@@ -74,17 +75,32 @@ class ProductService
      *
      * @param ProductRequest $request
      * @return Product
+     * @throws ProductException
      */
     public function editProduct(ProductRequest $request): Product
     {
-        $product = EntityFactory::createProduct(
-            $request->price,
-            $request->title,
-            $request->url,
-            $request->description,
-            $request->author,
-            $request->image
-        );
+        $product = $this->productRepository->find($request->id);
+
+        if (null === $product) {
+            throw new ProductException(
+                message: 'Отсутствуют товар с идентификатором ' . $request->id,
+                code: ResponseAlias::HTTP_BAD_REQUEST,
+                responseCode: 'PRODUCT_NOT_FOUND',
+                logLevel: LogLevel::WARNING
+            );
+        }
+
+        $this
+            ->builder
+            ->setExistProduct($product)
+            ->setPrice($request->price)
+            ->setTitle($request->title)
+            ->setUrl($request->url)
+            ->setDescription($request->description)
+            ->setAuthor($request->author)
+            ->setImage($request->image)
+            ->build()
+            ->getResult();
 
         $this->productRepository->save($product, true);
 
