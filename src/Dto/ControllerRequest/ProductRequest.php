@@ -8,6 +8,15 @@ use App\Component\Interface\AbstractDtoControllerRequest;
 class ProductRequest extends AbstractDtoControllerRequest
 {
     /**
+     * Идентификатор товара
+     *
+     * @var int|null
+     * @Annotation\Type("integer")
+     * @Annotation\SerializedName("id")
+     */
+    public ?int $id = null;
+
+    /**
      * Стоимость товара
      *
      * @var float
