@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\ControllerRequest\BaseDtoRequest;
+use App\Dto\ControllerRequest\BaseRequest;
 use App\Dto\ControllerResponse\BaseResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,7 +17,7 @@ class OrderController extends AbstractController
      *
      * @OA\RequestBody(
      *    description="",
-     *    @Model(type=BaseDtoRequest::class)
+     *    @Model(type=BaseRequest::class)
      * )
      * @OA\Response(
      *      response=200,
@@ -25,11 +25,11 @@ class OrderController extends AbstractController
      *      @Model(type=BaseResponse::class)
      * )
      * @OA\Tag(name="Order")
-     * @param BaseDtoRequest $request
+     * @param BaseRequest $request
      * @return BaseResponse
      */
     #[Route('/checkout', name: 'checkout', methods: ['POST'])]
-    public function checkout(BaseDtoRequest $request): BaseResponse
+    public function checkout(BaseRequest $request): BaseResponse
     {
         return new BaseResponse();
     }
@@ -39,7 +39,7 @@ class OrderController extends AbstractController
      *
      * @OA\RequestBody(
      *    description="",
-     *    @Model(type=BaseDtoRequest::class)
+     *    @Model(type=BaseRequest::class)
      * )
      * @OA\Response(
      *      response=200,
@@ -47,11 +47,11 @@ class OrderController extends AbstractController
      *      @Model(type=BaseResponse::class)
      * )
      * @OA\Tag(name="Order")
-     * @param BaseDtoRequest $request
+     * @param BaseRequest $request
      * @return BaseResponse
      */
     #[Route('/list', name: 'list', methods: ['GET'])]
-    public function list(BaseDtoRequest $request): BaseResponse
+    public function list(BaseRequest $request): BaseResponse
     {
         return new BaseResponse();
     }

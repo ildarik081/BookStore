@@ -7,7 +7,7 @@ use JMS\Serializer\Annotation;
 class Image
 {
     /**
-     * Идентификатор картинки
+     * Идентификатор изображения
      *
      * @var int|null
      * @Annotation\Type("integer")
@@ -34,7 +34,7 @@ class Image
     public ?string $path = null;
 
     /**
-     * Описание
+     * Описание к изображению
      *
      * @var string|null
      * @Annotation\Type("string")

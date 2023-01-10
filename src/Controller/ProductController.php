@@ -129,6 +129,7 @@ class ProductController extends AbstractController
      * @OA\Tag(name="Product")
      * @param ProductRequest $request
      * @return SuccessResponse
+     * @throws ProductException
      */
     #[Route('/delete', name: 'delete', methods: ['DELETE'])]
     public function delete(ProductRequest $request): SuccessResponse

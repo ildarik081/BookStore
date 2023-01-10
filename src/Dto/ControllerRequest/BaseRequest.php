@@ -4,6 +4,6 @@ namespace App\Dto\ControllerRequest;
 
 use App\Component\Interface\AbstractDtoControllerRequest;
 
-class BaseDtoRequest extends AbstractDtoControllerRequest
+class BaseRequest extends AbstractDtoControllerRequest
 {
 }

@@ -213,6 +213,8 @@ class Product implements ControllerResponseInterface
     }
 
     /**
+     * Получить коолекцию изображений товара
+     *
      * @return Collection<int, Image>
      */
     public function getImages(): Collection
@@ -220,6 +222,12 @@ class Product implements ControllerResponseInterface
         return $this->images;
     }
 
+    /**
+     * Добавить изображение
+     *
+     * @param Image $image
+     * @return self
+     */
     public function addImage(Image $image): self
     {
         if (!$this->images->contains($image)) {
@@ -230,6 +238,12 @@ class Product implements ControllerResponseInterface
         return $this;
     }
 
+    /**
+     * Удалить изображение
+     *
+     * @param Image $image
+     * @return self
+     */
     public function removeImage(Image $image): self
     {
         if ($this->images->removeElement($image)) {

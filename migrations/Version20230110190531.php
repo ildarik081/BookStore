@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230110183753 extends AbstractMigration
+final class Version20230110190531 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -43,8 +43,8 @@ final class Version20230110183753 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_C53D045F4584665A ON image (product_id)');
         $this->addSql('COMMENT ON COLUMN image.id IS \'Идентификатор изображения\'');
         $this->addSql('COMMENT ON COLUMN image.product_id IS \'Идентификатор товара\'');
-        $this->addSql('COMMENT ON COLUMN image.file_name IS \'Наименование картинки\'');
-        $this->addSql('COMMENT ON COLUMN image.path IS \'Путь до картинки\'');
+        $this->addSql('COMMENT ON COLUMN image.file_name IS \'Наименование файла изображения\'');
+        $this->addSql('COMMENT ON COLUMN image.path IS \'Путь до изображения\'');
         $this->addSql('COMMENT ON COLUMN image.description IS \'Описание\'');
         $this->addSql('CREATE TABLE "order" (id INT NOT NULL, status_id INT NOT NULL, session_id VARCHAR(40) NOT NULL, total_price DOUBLE PRECISION DEFAULT \'0\' NOT NULL, email VARCHAR(180) DEFAULT NULL, dt_create TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_F52993986BF700BD ON "order" (status_id)');

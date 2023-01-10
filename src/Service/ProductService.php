@@ -4,7 +4,6 @@ namespace App\Service;
 
 use App\Component\Builder\ProductBuilder;
 use App\Component\Exception\ProductException;
-use App\Component\Factory\EntityFactory;
 use App\Component\Factory\SimpleResponsFactory;
 use App\Dto\ControllerRequest\ProductListRequest;
 use App\Dto\ControllerRequest\ProductRequest;

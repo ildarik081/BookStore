@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Component\Exception\RepositoryException;
 use App\Entity\Cart;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 /**
  * @extends ServiceEntityRepository<Cart>
@@ -37,5 +40,28 @@ class CartRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * Получить корзину по идентификатору сессии
+     *
+     * @param string $sessionId
+     * @return Cart
+     * @throws RepositoryException
+     */
+    public function getCartBySessionId(string $sessionId): Cart
+    {
+        $cart = $this->findOneBy(['sessionId' => $sessionId]);
+
+        if (null === $cart) {
+            throw new RepositoryException(
+                message: 'У вас пустая корзина',
+                code: ResponseAlias::HTTP_BAD_REQUEST,
+                responseCode: 'CART_NOT_FOUND',
+                logLevel: LogLevel::WARNING
+            );
+        }
+
+        return $cart;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\ControllerRequest\BaseDtoRequest;
+use App\Dto\ControllerRequest\BaseRequest;
 use App\Dto\ControllerResponse\BaseResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,7 +17,7 @@ class SearchController extends AbstractController
      *
      * @OA\RequestBody(
      *    description="",
-     *    @Model(type=BaseDtoRequest::class)
+     *    @Model(type=BaseRequest::class)
      * )
      * @OA\Response(
      *      response=200,
@@ -25,11 +25,11 @@ class SearchController extends AbstractController
      *      @Model(type=BaseResponse::class)
      * )
      * @OA\Tag(name="Search")
-     * @param BaseDtoRequest $request
+     * @param BaseRequest $request
      * @return BaseResponse
      */
     #[Route(name: 'title', methods: ['POST'])]
-    public function searchByTitle(BaseDtoRequest $request): BaseResponse
+    public function searchByTitle(BaseRequest $request): BaseResponse
     {
         return new BaseResponse();
     }
