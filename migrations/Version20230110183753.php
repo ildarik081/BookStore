@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230108135751 extends AbstractMigration
+final class Version20230110183753 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -19,6 +19,12 @@ final class Version20230108135751 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        $this->addSql('CREATE SEQUENCE cart_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE cart_product_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE image_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE "order_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE order_status_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE product_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE cart (id INT NOT NULL, session_id VARCHAR(40) NOT NULL, dt_create TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, dt_update TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON TABLE cart IS \'Корзины пользователей\'');
         $this->addSql('COMMENT ON COLUMN cart.id IS \'Идентификатор корзины\'');
@@ -33,6 +39,13 @@ final class Version20230108135751 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN cart_product.product_id IS \'Идентификатор товара\'');
         $this->addSql('COMMENT ON COLUMN cart_product.cart_id IS \'Идентификатор корзины\'');
         $this->addSql('COMMENT ON COLUMN cart_product.quantity IS \'Количество товаров\'');
+        $this->addSql('CREATE TABLE image (id INT NOT NULL, product_id INT DEFAULT NULL, file_name VARCHAR(255) NOT NULL, path VARCHAR(255) NOT NULL, description VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_C53D045F4584665A ON image (product_id)');
+        $this->addSql('COMMENT ON COLUMN image.id IS \'Идентификатор изображения\'');
+        $this->addSql('COMMENT ON COLUMN image.product_id IS \'Идентификатор товара\'');
+        $this->addSql('COMMENT ON COLUMN image.file_name IS \'Наименование картинки\'');
+        $this->addSql('COMMENT ON COLUMN image.path IS \'Путь до картинки\'');
+        $this->addSql('COMMENT ON COLUMN image.description IS \'Описание\'');
         $this->addSql('CREATE TABLE "order" (id INT NOT NULL, status_id INT NOT NULL, session_id VARCHAR(40) NOT NULL, total_price DOUBLE PRECISION DEFAULT \'0\' NOT NULL, email VARCHAR(180) DEFAULT NULL, dt_create TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_F52993986BF700BD ON "order" (status_id)');
         $this->addSql('COMMENT ON TABLE "order" IS \'Заказы\'');
@@ -48,7 +61,7 @@ final class Version20230108135751 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN order_status.value IS \'Значение\'');
         $this->addSql('COMMENT ON COLUMN order_status.description IS \'Описание\'');
         $this->addSql('COMMENT ON COLUMN order_status.code IS \'Код статуса\'');
-        $this->addSql('CREATE TABLE product (id INT NOT NULL, price DOUBLE PRECISION NOT NULL, title VARCHAR(255) NOT NULL, description TEXT DEFAULT NULL, author VARCHAR(180) DEFAULT NULL, image VARCHAR(255) DEFAULT NULL, url VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE product (id INT NOT NULL, price DOUBLE PRECISION NOT NULL, title VARCHAR(255) NOT NULL, description TEXT DEFAULT NULL, author VARCHAR(180) DEFAULT NULL, url VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX product_titlex ON product (title)');
         $this->addSql('COMMENT ON TABLE product IS \'Товары\'');
         $this->addSql('COMMENT ON COLUMN product.id IS \'Идентификатор товара\'');
@@ -56,20 +69,28 @@ final class Version20230108135751 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN product.title IS \'Наименование товара\'');
         $this->addSql('COMMENT ON COLUMN product.description IS \'Описание товара\'');
         $this->addSql('COMMENT ON COLUMN product.author IS \'Автор\'');
-        $this->addSql('COMMENT ON COLUMN product.image IS \'Ссылка на изображение товара\'');
         $this->addSql('COMMENT ON COLUMN product.url IS \'Ссылка для скачивания\'');
         $this->addSql('ALTER TABLE cart_product ADD CONSTRAINT FK_2890CCAA4584665A FOREIGN KEY (product_id) REFERENCES product (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE cart_product ADD CONSTRAINT FK_2890CCAA1AD5CDBF FOREIGN KEY (cart_id) REFERENCES cart (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE image ADD CONSTRAINT FK_C53D045F4584665A FOREIGN KEY (product_id) REFERENCES product (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE "order" ADD CONSTRAINT FK_F52993986BF700BD FOREIGN KEY (status_id) REFERENCES order_status (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
     }
 
     public function down(Schema $schema): void
     {
+        $this->addSql('DROP SEQUENCE cart_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE cart_product_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE image_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE "order_id_seq" CASCADE');
+        $this->addSql('DROP SEQUENCE order_status_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE product_id_seq CASCADE');
         $this->addSql('ALTER TABLE cart_product DROP CONSTRAINT FK_2890CCAA4584665A');
         $this->addSql('ALTER TABLE cart_product DROP CONSTRAINT FK_2890CCAA1AD5CDBF');
+        $this->addSql('ALTER TABLE image DROP CONSTRAINT FK_C53D045F4584665A');
         $this->addSql('ALTER TABLE "order" DROP CONSTRAINT FK_F52993986BF700BD');
         $this->addSql('DROP TABLE cart');
         $this->addSql('DROP TABLE cart_product');
+        $this->addSql('DROP TABLE image');
         $this->addSql('DROP TABLE "order"');
         $this->addSql('DROP TABLE order_status');
         $this->addSql('DROP TABLE product');

@@ -4,6 +4,7 @@ namespace App\Dto;
 
 use App\Component\Interface\Controller\ControllerResponseInterface;
 use JMS\Serializer\Annotation;
+use App\Dto\Image;
 
 class Product implements ControllerResponseInterface
 {
@@ -55,11 +56,11 @@ class Product implements ControllerResponseInterface
     /**
      * Ссылка на изображение товара
      *
-     * @var string|null
-     * @Annotation\Type("string")
-     * @Annotation\SerializedName("image")
+     * @var Image[]
+     * @Annotation\Type("array<App\Dto\Image>")
+     * @Annotation\SerializedName("images")
      */
-    public ?string $image = null;
+    public array $images = [];
 
     /**
      * Ссылка для скачивания

@@ -4,13 +4,14 @@ namespace App\Controller;
 
 use App\Component\Exception\ProductException;
 use App\Component\Exception\ValidatorException;
-use App\Component\Utils\ProductDtoValidator;
-use App\Dto\ControllerRequest\BaseDtoRequest;
+use App\Component\Validator\ProductDtoValidator;
 use App\Dto\ControllerRequest\ProductListRequest;
 use App\Dto\ControllerRequest\ProductRequest;
-use App\Dto\ControllerResponse\BaseDtoResponse;
+use App\Dto\ControllerResponse\BaseResponse;
 use App\Dto\ControllerResponse\ProductListResponse;
+use App\Dto\ControllerResponse\SuccessResponse;
 use App\Dto\Product;
+use App\Entity\Product as EntityProduct;
 use App\Service\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -122,38 +123,34 @@ class ProductController extends AbstractController
      * )
      * @OA\Response(
      *      response=200,
-     *      description="",
-     *      @Model(type=BaseDtoResponse::class)
+     *      description="Статус удаления товара",
+     *      @Model(type=SuccessResponse::class)
      * )
      * @OA\Tag(name="Product")
-     * @param BaseDtoRequest $request
-     * @return BaseDtoResponse
+     * @param ProductRequest $request
+     * @return SuccessResponse
      */
     #[Route('/delete', name: 'delete', methods: ['DELETE'])]
-    public function delete(ProductRequest $request): BaseDtoResponse
+    public function delete(ProductRequest $request): SuccessResponse
     {
-        return new BaseDtoResponse();
+        return $this->productService->deleteProduct($request);
     }
 
     /**
      * Получить товар по идентификатору
      *
-     * @OA\RequestBody(
-     *    description="",
-     *    @Model(type=BaseDtoRequest::class)
-     * )
      * @OA\Response(
      *      response=200,
-     *      description="",
-     *      @Model(type=BaseDtoResponse::class)
+     *      description="Данные о товаре",
+     *      @Model(type=Product::class)
      * )
      * @OA\Tag(name="Product")
-     * @param BaseDtoRequest $request
-     * @return BaseDtoResponse
+     * @param EntityProduct $product
+     * @return BaseResponse
      */
     #[Route('/item/{id}', name: 'item', methods: ['GET'])]
-    public function item(BaseDtoRequest $request): BaseDtoResponse
+    public function item(EntityProduct $product): EntityProduct
     {
-        return new BaseDtoResponse();
+        return $product;
     }
 }

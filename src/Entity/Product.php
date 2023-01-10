@@ -2,17 +2,20 @@
 
 namespace App\Entity;
 
+use App\Component\Interface\Controller\ControllerResponseInterface;
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\Table(options: ['comment' => 'Товары'])]
 #[ORM\Index(name: 'product_titlex', columns: ['title'])]
-class Product
+class Product implements ControllerResponseInterface
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue('SEQUENCE')]
     #[
         ORM\Column(
             type: Types::INTEGER,
@@ -64,21 +67,25 @@ class Product
         ORM\Column(
             type: Types::STRING,
             length: 255,
-            nullable: true,
-            options: ['comment' => 'Ссылка на изображение товара']
-        )
-    ]
-    private ?string $image = null;
-
-    #[
-        ORM\Column(
-            type: Types::STRING,
-            length: 255,
             nullable: false,
             options: ['comment' => 'Ссылка для скачивания']
         )
     ]
     private ?string $url = null;
+
+    #[
+        ORM\OneToMany(
+            mappedBy: 'product',
+            targetEntity: Image::class,
+            cascade: ['persist', 'remove']
+        )
+    ]
+    private Collection $images;
+
+    public function __construct()
+    {
+        $this->images = new ArrayCollection();
+    }
 
     /**
      * Получить идентификатор товара
@@ -183,29 +190,6 @@ class Product
     }
 
     /**
-     * Получить ссылку на изображение товара
-     *
-     * @return string|null
-     */
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    /**
-     * Записать ссылку на изображение товара
-     *
-     * @param string|null $image
-     * @return self
-     */
-    public function setImage(?string $image): self
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    /**
      * Получить ссылку для скачивания
      *
      * @return string|null
@@ -224,6 +208,35 @@ class Product
     public function setUrl(string $url): self
     {
         $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): self
+    {
+        if ($this->images->removeElement($image)) {
+            if ($image->getProduct() === $this) {
+                $image->setProduct(null);
+            }
+        }
 
         return $this;
     }

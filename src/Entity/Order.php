@@ -19,7 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Order
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue('SEQUENCE')]
     #[
         ORM\Column(
             type: Types::INTEGER,

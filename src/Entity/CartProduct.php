@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 class CartProduct
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue('SEQUENCE')]
     #[
         ORM\Column(
             type: Types::INTEGER,

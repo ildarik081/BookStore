@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Component\Utils\Aliases;
 use App\Component\Utils\Utils;
+use App\Entity\Image;
 use App\Entity\OrderStatus;
 use App\Entity\Product;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -32,14 +33,19 @@ class AppFixtures extends Fixture
         $products = Utils::convertCsvToArray($this->workingDir . self::SVG_FILE_PATH);
 
         foreach ($products as $product) {
+            $image = new Image();
+            $image
+                ->setFileName($product[5])
+                ->setPath($product[4]);
+
             $productEntity = new Product();
             $productEntity
                 ->setPrice((float) $product[0])
                 ->setTitle($product[1])
                 ->setDescription($product[2])
                 ->setAuthor($product[3])
-                ->setImage($product[4])
-                ->setUrl($product[5]);
+                ->addImage($image)
+                ->setUrl($product[6]);
 
             $manager->persist($productEntity);
         }

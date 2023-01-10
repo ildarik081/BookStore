@@ -3,7 +3,7 @@
 namespace App\Component\Factory;
 
 use App\Component\Exception\AbstractApiException;
-use App\Dto\ControllerResponse\ExceptionDtoResponse;
+use App\Dto\ControllerResponse\ExceptionResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -19,7 +19,7 @@ class ErrorResponseFactory
      */
     public function create(Throwable $exception): JsonResponse
     {
-        $responseDto = new ExceptionDtoResponse();
+        $responseDto = new ExceptionResponse();
 
         if ($exception instanceof AbstractApiException) {
             $responseDto->message = $exception->getMessage();

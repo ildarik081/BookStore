@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Cart
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue('SEQUENCE')]
     #[
         ORM\Column(
             type: Types::INTEGER,

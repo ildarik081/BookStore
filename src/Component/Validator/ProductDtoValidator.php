@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Component\Utils;
+namespace App\Component\Validator;
 
 use App\Component\Exception\ValidatorException;
 use App\Dto\ControllerRequest\ProductRequest;

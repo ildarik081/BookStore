@@ -15,6 +15,11 @@ class ProductBuilder implements BuilderInterface
     private ?string $image = null;
     private ?string $url = null;
 
+    /**
+     * Собрать Product
+     *
+     * @return ProductBuilder
+     */
     public function build(): ProductBuilder
     {
         if (null === $this->existProduct) {
@@ -34,6 +39,11 @@ class ProductBuilder implements BuilderInterface
         return $this;
     }
 
+    /**
+     * Обнулить builder
+     *
+     * @return ProductBuilder
+     */
     public function reset(): ProductBuilder
     {
         $this->existProduct = null;
@@ -48,6 +58,11 @@ class ProductBuilder implements BuilderInterface
         return $this;
     }
 
+    /**
+     * Получить Product
+     *
+     * @return Product
+     */
     public function getResult(): Product
     {
         $result = $this->result;
@@ -56,6 +71,12 @@ class ProductBuilder implements BuilderInterface
         return $result;
     }
 
+    /**
+     * Добавить Product
+     *
+     * @param Product|null $product
+     * @return ProductBuilder
+     */
     public function setExistProduct(?Product $product): ProductBuilder
     {
         $this->existProduct = $product;
@@ -63,6 +84,12 @@ class ProductBuilder implements BuilderInterface
         return $this;
     }
 
+    /**
+     * Добавить цену
+     *
+     * @param float|null $price
+     * @return ProductBuilder
+     */
     public function setPrice(?float $price): ProductBuilder
     {
         $this->price = $price;
@@ -70,6 +97,12 @@ class ProductBuilder implements BuilderInterface
         return $this;
     }
 
+    /**
+     * Добавить название
+     *
+     * @param string|null $title
+     * @return ProductBuilder
+     */
     public function setTitle(?string $title): ProductBuilder
     {
         $this->title = $title;
@@ -77,6 +110,12 @@ class ProductBuilder implements BuilderInterface
         return $this;
     }
 
+    /**
+     * Добавить описание
+     *
+     * @param string|null $description
+     * @return ProductBuilder
+     */
     public function setDescription(?string $description): ProductBuilder
     {
         $this->description = $description;
@@ -84,6 +123,12 @@ class ProductBuilder implements BuilderInterface
         return $this;
     }
 
+    /**
+     * Добавить автора
+     *
+     * @param string|null $author
+     * @return ProductBuilder
+     */
     public function setAuthor(?string $author): ProductBuilder
     {
         $this->author = $author;
@@ -91,6 +136,12 @@ class ProductBuilder implements BuilderInterface
         return $this;
     }
 
+    /**
+     * Добавить изобрадение
+     *
+     * @param string|null $image
+     * @return ProductBuilder
+     */
     public function setImage(?string $image): ProductBuilder
     {
         $this->image = $image;
@@ -98,6 +149,12 @@ class ProductBuilder implements BuilderInterface
         return $this;
     }
 
+    /**
+     * Добавить ссылку для скачивания
+     *
+     * @param string|null $url
+     * @return ProductBuilder
+     */
     public function setUrl(?string $url): ProductBuilder
     {
         $this->url = $url;
