@@ -43,5 +43,5 @@ jobs:
     - uses: php-actions/phpstan@v3
       with:
         php_version: 8.1
-        configuration: /usr/local/bin/phpstan.phar
+        configuration: /usr/local/bin/phpstan.noen
 
