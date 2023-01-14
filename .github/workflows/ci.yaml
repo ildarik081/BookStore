@@ -36,10 +36,13 @@ jobs:
       - name: Run PHPMD
         run: phpmd src text --exclude src/Kernel.php controversial,./phpmd.xml
 
-  # phpstan:
-  #   name: PHPStan
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Run PHPStan
-  #       run: vendor/bin/phpstan analyze -c phpstan.neon
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: php-actions/phpstan@v3
+      with:
+        path: src/
 
