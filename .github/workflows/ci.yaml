@@ -35,9 +35,9 @@ jobs:
     name: PHPMD
     runs-on: ubuntu-latest
     steps:
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           coverage: none
           tools: phpmd
@@ -49,9 +49,7 @@ jobs:
     name: PHPStan
     runs-on: ubuntu-latest
     steps:
-        uses: php-actions/phpstan@v3
-        with:
-          configuration: phpstan.neon
+      - uses: php-actions/phpstan@v3
 
       - name: Run PHPStan
         run: vendor/bin/phpstan analyze
