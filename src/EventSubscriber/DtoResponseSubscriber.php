@@ -4,7 +4,6 @@ namespace App\EventSubscriber;
 
 use App\Component\Exception\ControllerException;
 use App\Component\Factory\DtoResponseFactory;
-use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 
@@ -30,7 +29,6 @@ class DtoResponseSubscriber implements EventSubscriberInterface
         $event->setResponse($response);
     }
 
-    #[ArrayShape(['kernel.view' => 'string'])]
     public static function getSubscribedEvents(): array
     {
         return [

@@ -3,7 +3,6 @@
 namespace App\EventSubscriber;
 
 use App\Component\Factory\ErrorResponseFactory;
-use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
@@ -30,7 +29,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         );
     }
 
-    #[ArrayShape(['kernel.exception' => 'string'])] public static function getSubscribedEvents(): array
+    public static function getSubscribedEvents(): array
     {
         return [
             'kernel.exception' => 'onKernelException',
