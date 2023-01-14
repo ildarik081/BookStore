@@ -46,7 +46,9 @@ jobs:
         run: composer ins --prefer-dist --no-progress --no-suggest
 
       - name: Create xml
-        run: ls -la
+        run: |
+          cd var
+          ls -la
 
       - name: PHPStan
         uses: chindit/actions-phpstan@master
