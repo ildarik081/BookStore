@@ -16,16 +16,14 @@ jobs:
     name: PHPCS
     runs-on: ubuntu-latest
     steps:
-      - name: Run PHPCS
-        run: |
-          curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
-          php phpcs.phar --version
-
-      - uses: tinovyatkin/action-php-codesniffer@v1
+      - uses: squizlabs/php_codesniffer
         with:
           files: "**.php"
           phpcs_path: php phpcs.phar
           standard: phpcs.xml
+
+      - name: Run PHPCS
+        run: phpcs
 
   phpmd:
     name: PHPMD
