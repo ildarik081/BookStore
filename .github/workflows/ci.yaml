@@ -49,6 +49,8 @@ jobs:
         uses: chindit/actions-phpstan@master
         with:
           arguments: 'src/ --level=7'
+        run: |
+          php bin/console cache:clear
   
   psalm:
     name: Psalm
