@@ -60,4 +60,4 @@ jobs:
       - name: Psalm
         uses: docker://vimeo/psalm-github-actions
         with:
-          relative_dir: ./src
+          relative_dir: src/
