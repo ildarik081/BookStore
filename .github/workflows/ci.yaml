@@ -1,4 +1,4 @@
-name: Code analysis
+name: Code analyze
 
 on:
   push:
@@ -20,8 +20,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install PHP_CodeSniffer
-        run: phpcs
+      - name: Run PHPCS
+        run: |
+          curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
+          php phpcs.phar --version
 
       - uses: tinovyatkin/action-php-codesniffer@v1
         with:
@@ -33,10 +35,8 @@ jobs:
     name: PHPMD
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup PHP environment
         uses: shivammathur/setup-php@v2
         with:
           coverage: none
@@ -44,4 +44,11 @@ jobs:
 
       - name: Run PHPMD
         run: phpmd src text --exclude src/Kernel.php controversial,./phpmd.xml
+
+  phpstan:
+    name: PHPStan
+      runs-on: ubuntu-latest
+      steps:
+        - name: Run PHPStan
+          run: vendor/bin/phpstan analyse src tests --level=max --no-progress
 
