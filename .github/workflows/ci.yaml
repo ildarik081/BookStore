@@ -45,14 +45,6 @@ jobs:
       - name: Install dependencies
         run: composer ins --prefer-dist --no-progress --no-suggest
 
-      - name: Create xml
-        run: |
-          cd var/cache
-          mkdir 777 test
-          cd test
-          echo "<?xml version="1.0" encoding="utf-8"?>" > App_KernelTestDebugContainer.xml
-          ls -la
-
       - name: PHPStan
         uses: chindit/actions-phpstan@master
         with:

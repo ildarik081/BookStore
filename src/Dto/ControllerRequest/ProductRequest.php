@@ -20,20 +20,20 @@ class ProductRequest extends AbstractDtoControllerRequest
     /**
      * Стоимость товара
      *
-     * @var float
+     * @var float|null
      * @Annotation\Type("float")
      * @Annotation\SerializedName("price")
      */
-    public float $price;
+    public ?float $price = null;
 
     /**
      * Наименование товара
      *
-     * @var string
+     * @var string|null
      * @Annotation\Type("string")
      * @Annotation\SerializedName("title")
      */
-    public string $title;
+    public ?string $title = null;
 
     /**
      * Описание товара
@@ -65,9 +65,9 @@ class ProductRequest extends AbstractDtoControllerRequest
     /**
      * Ссылка для скачивания
      *
-     * @var string
+     * @var string|null
      * @Annotation\Type("string")
      * @Annotation\SerializedName("url")
      */
-    public string $url;
+    public ?string $url = null;
 }
