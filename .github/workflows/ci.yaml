@@ -56,31 +56,6 @@ jobs:
         steps:
             -   uses: actions/checkout@v1
 
-            -   name: Setup PHP
-                uses: shivammathur/setup-php@v2
-                with:
-                    php-version: '8.1'
-                    extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
-                    coverage: none
-
-            -   name: Create database
-                run: |
-                  sudo /etc/init.d/mysql start
-                  mysql  -u root -proot -e 'CREATE DATABASE IF NOT EXISTS app_database;'
-            -   name: Cache composer dependencies
-                uses: actions/cache@v1
-                with:
-                    path: vendor
-                    key: composer-${{ hashFiles('composer.lock') }}
-
-            -   name: Run composer install
-                run: composer install -n --prefer-dist
-
-            -   name: Prepare Laravel Application
-                run: |
-                    cp .env.ci .env
-                    php artisan key:generate
-                    php artisan migrate
             -   name: Generate IDE helper files
                 run: |
                     php artisan ide-helper:eloquent
