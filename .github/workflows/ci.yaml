@@ -51,6 +51,7 @@ jobs:
           mkdir 777 test
           cd test
           touch App_KernelTestDebugContainer.xml
+          ls -la
 
       - name: PHPStan
         uses: chindit/actions-phpstan@master
