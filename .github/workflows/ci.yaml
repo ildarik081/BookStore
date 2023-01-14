@@ -58,6 +58,3 @@ jobs:
 
       - name: Psalm
         uses: docker://vimeo/psalm-github-actions
-        with:
-          configuration: psalm.xml
-          security_analysis: true
