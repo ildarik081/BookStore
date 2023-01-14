@@ -45,8 +45,8 @@ jobs:
       - name: Install dependencies
         run: composer ins --prefer-dist --no-progress --no-suggest
 
-      - name: Working cache
-        run: php bin/console cache:clear
+      - name: Create xml
+        run: touch /var/cache/test/App_KernelTestDebugContainer.xml
 
       - name: PHPStan
         uses: chindit/actions-phpstan@master
