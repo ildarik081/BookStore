@@ -56,11 +56,5 @@ jobs:
         steps:
             -   uses: actions/checkout@v1
 
-            -   name: Generate IDE helper files
-                run: |
-                    php artisan ide-helper:eloquent
-                    php artisan ide-helper:generate
-                    php artisan ide-helper:meta
-                    php artisan ide-helper:models
             -   name: Run psalm
                 run: ./vendor/bin/psalm -c psalm.xml
