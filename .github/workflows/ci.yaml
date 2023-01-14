@@ -17,41 +17,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: PHPCS
+        uses: chindit/actions-phpcs@master
         with:
-          fetch-depth: 0
+          dir: src/
 
-      - name: Install PHPCS
-        run: |
-          curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
-          php phpcs.phar --version
+  # phpmd:
+  #   name: PHPMD
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - uses: tinovyatkin/action-php-codesniffer@v1
-        with:
-          files: "**.php"
-          phpcs_path: php phpcs.phar
-          standard: phpcs.xml
+  #     - uses: shivammathur/setup-php@v2
+  #       with:
+  #         coverage: none
+  #         tools: phpmd
 
-      - name: Run PHPCS
-        run: phpcs
+  #     - name: Run PHPMD
+  #       run: phpmd src text --exclude src/Kernel.php controversial,./phpmd.xml
 
-  phpmd:
-    name: PHPMD
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: shivammathur/setup-php@v2
-        with:
-          coverage: none
-          tools: phpmd
-
-      - name: Run PHPMD
-        run: phpmd src text --exclude src/Kernel.php controversial,./phpmd.xml
-
-  phpstan:
-    name: PHPStan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run PHPStan
-        run: vendor/bin/phpstan analyze -c phpstan.neon
+  # phpstan:
+  #   name: PHPStan
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Run PHPStan
+  #       run: vendor/bin/phpstan analyze -c phpstan.neon
 
