@@ -43,6 +43,5 @@ jobs:
     - uses: php-actions/phpstan@v3
       with:
         php_version: 8.1
-        path: src/
-        configuration: "phpstan.neon"
+        configuration: phpstan.neon
 
