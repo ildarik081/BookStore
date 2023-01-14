@@ -13,6 +13,7 @@ on:
 
 jobs:	
   phpcs:
+    name: PHPCS
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -44,4 +45,5 @@ jobs:
           tools: phpmd
 
       - name: Run PHPMD
-        run: phpmd . github phpmd.xml --exclude 'tests/*,vendor/*'
+        run: phpmd src text --exclude src/Kernel.php controversial,./phpmd.xml
+
