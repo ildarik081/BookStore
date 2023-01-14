@@ -14,10 +14,16 @@ endif
 
 test:
 	@cd $(ROOT_DIR)
-	@php -d memory_limit=-1 $(VENDOR_BIN_DIR)/simple-phpunit -c $(ROOT_DIR)/phpunit.xml.dist ${args}
+	@php -d memory_limit=-1 $(VENDOR_BIN_DIR)/simple-phpunit -c $(ROOT_DIR)/phpunit.xml ${args}
+
+phpcs:
+	@$(VENDOR_BIN_DIR)/phpcs
 
 phpmd:
-	@$(VENDOR_BIN_DIR)/phpmd src text --exclude src/Kernel.php controversial,./phpmd.xml.dist
+	@$(VENDOR_BIN_DIR)/phpmd src text --exclude src/Kernel.php controversial,./phpmd.xml
 
 phpstan:
-	@$(VENDOR_BIN_DIR)/phpstan analyze -c $(ROOT_DIR)/phpstan.neon
+	$(VENDOR_BIN_DIR)/phpstan analyze -c $(ROOT_DIR)/phpstan.neon
+
+psalm:
+	./vendor/bin/psalm

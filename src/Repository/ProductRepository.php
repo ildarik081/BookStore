@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Component\Exception\RepositoryException;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 /**
  * @extends ServiceEntityRepository<Product>
@@ -39,28 +42,26 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Product[] Returns an array of Product objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Получить товар по идентификатору
+     *
+     * @param integer $id
+     * @return Product
+     * @throws RepositoryException
+     */
+    public function getProductById(int $id): Product
+    {
+        $product = $this->find($id);
+        
+        if (null === $product) {
+            throw new RepositoryException(
+                message: 'Товара с идентификатором ' . $id . ' у нас нет',
+                code: ResponseAlias::HTTP_BAD_REQUEST,
+                responseCode: 'PRODUCT_NOT_FOUND',
+                logLevel: LogLevel::WARNING
+            );
+        }
 
-//    public function findOneBySomeField($value): ?Product
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        return $product;
+    }
 }

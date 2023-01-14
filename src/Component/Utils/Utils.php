@@ -27,9 +27,9 @@ class Utils
         }
 
         $dataFile = fopen($csvFilePath, 'r');
-        $dataCSV= [];
-    
-        while (($handle = fgetcsv($dataFile, 0, ';')) !== false) { 
+        $dataCSV = [];
+
+        while (($handle = fgetcsv($dataFile, 0, ';')) !== false) {
             $dataCSV[] = $handle;
         }
 

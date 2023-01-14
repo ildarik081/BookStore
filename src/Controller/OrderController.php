@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Dto\ControllerRequest\BaseDtoRequest;
-use App\Dto\ControllerResponse\BaseDtoResponse;
+use App\Dto\ControllerRequest\BaseRequest;
+use App\Dto\ControllerResponse\BaseResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
@@ -17,21 +17,21 @@ class OrderController extends AbstractController
      *
      * @OA\RequestBody(
      *    description="",
-     *    @Model(type=BaseDtoRequest::class)
+     *    @Model(type=BaseRequest::class)
      * )
      * @OA\Response(
      *      response=200,
      *      description="",
-     *      @Model(type=BaseDtoResponse::class)
+     *      @Model(type=BaseResponse::class)
      * )
      * @OA\Tag(name="Order")
-     * @param BaseDtoRequest $request
-     * @return BaseDtoResponse
+     * @param BaseRequest $request
+     * @return BaseResponse
      */
     #[Route('/checkout', name: 'checkout', methods: ['POST'])]
-    public function checkout(BaseDtoRequest $request): BaseDtoResponse
+    public function checkout(BaseRequest $request): BaseResponse
     {
-        return new BaseDtoResponse();
+        return new BaseResponse();
     }
 
     /**
@@ -39,20 +39,20 @@ class OrderController extends AbstractController
      *
      * @OA\RequestBody(
      *    description="",
-     *    @Model(type=BaseDtoRequest::class)
+     *    @Model(type=BaseRequest::class)
      * )
      * @OA\Response(
      *      response=200,
      *      description="",
-     *      @Model(type=BaseDtoResponse::class)
+     *      @Model(type=BaseResponse::class)
      * )
      * @OA\Tag(name="Order")
-     * @param BaseDtoRequest $request
-     * @return BaseDtoResponse
+     * @param BaseRequest $request
+     * @return BaseResponse
      */
     #[Route('/list', name: 'list', methods: ['GET'])]
-    public function list(BaseDtoRequest $request): BaseDtoResponse
+    public function list(BaseRequest $request): BaseResponse
     {
-        return new BaseDtoResponse();
+        return new BaseResponse();
     }
 }

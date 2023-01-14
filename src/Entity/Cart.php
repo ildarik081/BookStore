@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CartRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,30 +19,51 @@ use Doctrine\ORM\Mapping as ORM;
 class Cart
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    /** @phpstan-ignore-next-line */
-    private int $id;
+    #[ORM\GeneratedValue('IDENTITY')]
+    #[
+        ORM\Column(
+            type: Types::INTEGER,
+            nullable: false,
+            options: ['comment' => 'Идентификатор корзины']
+        )
+    ]
+    private ?int $id = null;
 
-    #[ORM\Column(
-        length: 40,
-        options: ['comment' => 'Идентификатор сессии']
-    )]
+    #[
+        ORM\Column(
+            type: Types::STRING,
+            nullable: false,
+            length: 40,
+            options: ['comment' => 'Идентификатор сессии']
+        )
+    ]
     private ?string $sessionId = null;
 
-    #[ORM\Column(
-        type: Types::DATETIME_MUTABLE,
-        options: ['comment' => 'Дата создания корзины']
-    )]
-    private ?\DateTimeInterface $dtCreate = null;
+    #[
+        ORM\Column(
+            type: Types::DATETIME_MUTABLE,
+            nullable: false,
+            options: ['comment' => 'Дата создания корзины']
+        )
+    ]
+    private ?DateTimeInterface $dtCreate = null;
 
-    #[ORM\Column(
-        type: Types::DATETIME_MUTABLE,
-        options: ['comment' => 'Дата обновления корзины']
-    )]
-    private ?\DateTimeInterface $dtUpdate = null;
+    #[
+        ORM\Column(
+            type: Types::DATETIME_MUTABLE,
+            nullable: false,
+            options: ['comment' => 'Дата обновления корзины']
+        )
+    ]
+    private ?DateTimeInterface $dtUpdate = null;
 
-    #[ORM\OneToMany(mappedBy: 'cart', targetEntity: CartProduct::class)]
+    #[
+        ORM\OneToMany(
+            mappedBy: 'cart',
+            targetEntity: CartProduct::class,
+            cascade: ['persist', 'remove']
+        )
+    ]
     private Collection $cartProducts;
 
     public function __construct()
@@ -52,16 +74,16 @@ class Cart
     /**
      * Получить идентификатор корзины
      *
-     * @return integer
+     * @return integer|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
      * Получить идентификатор сессии
-     * 
+     *
      * @return string|null
      */
     public function getSessionId(): ?string
@@ -71,7 +93,7 @@ class Cart
 
     /**
      * Записать идентификатор сессии
-     * 
+     *
      * @param string $sessionId
      * @return self
      */
@@ -84,7 +106,7 @@ class Cart
 
     /**
      * Получить дату создания корзины
-     * 
+     *
      * @return DateTimeInterface|null
      */
     public function getDtCreate(): ?DateTimeInterface
@@ -94,14 +116,13 @@ class Cart
 
     /**
      * Записать дату создания корзины
-     * 
-     * @param DateTimeInterface $dtCreate
+     *
      * @return self
      */
     #[ORM\PrePersist]
-    public function setDtCreate(DateTimeInterface $dtCreate): self
+    public function setDtCreate(): self
     {
-        $this->dtCreate = $dtCreate;
+        $this->dtCreate = new DateTime();
 
         return $this;
     }
@@ -119,21 +140,20 @@ class Cart
     /**
      * Записать дату обновления корзины
      *
-     * @param DateTimeInterface $dtUpdate
      * @return self
      */
     #[ORM\PreFlush]
-    public function setDtUpdate(DateTimeInterface $dtUpdate): self
+    public function setDtUpdate(): self
     {
-        $this->dtUpdate = $dtUpdate;
+        $this->dtUpdate = new DateTime();
 
         return $this;
     }
 
     /**
      * Получить массив товаров в корзине
-     * 
-     * @return Collection<int, CartProduct>
+     *
+     * @return Collection
      */
     public function getCartProducts(): Collection
     {

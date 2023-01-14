@@ -5,7 +5,7 @@ namespace App\Tests\Service;
 use App\Component\Builder\UserBuilder;
 use App\Component\Redis\RedisTools;
 use App\Component\StaticDataGenerator;
-use App\Dto\ControllerRequest\BaseDtoRequest;
+use App\Dto\ControllerRequest\BaseRequest;
 use App\Dto\ControllerRequest\RefreshTokenDtoRequest;
 use App\Dto\ControllerRequest\UserDtoRequest;
 use App\Repository\UserRepository;
@@ -28,10 +28,10 @@ class UserServiceTest extends AbstractTestCaseService
         $userDto->id = 5;
         $jwtInfo = new JwtInfoDto();
         $jwtInfo->user = $userDto;
-        $baseDtoRequest = new BaseDtoRequest();
-        $baseDtoRequest->jwtInfo = $jwtInfo;
+        $BaseRequest = new BaseRequest();
+        $BaseRequest->jwtInfo = $jwtInfo;
 
-        $result = $userService->getProfile($baseDtoRequest);
+        $result = $userService->getProfile($BaseRequest);
 
         self::assertEquals(5, $result->id);
         self::assertEquals('5test@test.ru', $result->email);

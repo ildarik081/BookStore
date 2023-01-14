@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CartProductRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,28 +14,69 @@ use Doctrine\ORM\Mapping as ORM;
 class CartProduct
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    /** @phpstan-ignore-next-line */
-    private int $id;
+    #[ORM\GeneratedValue('IDENTITY')]
+    #[
+        ORM\Column(
+            type: Types::INTEGER,
+            nullable: false,
+            options: ['comment' => 'Идентификатор товара в корзине']
+        )
+    ]
+    private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'cartProducts')]
+    #[
+        ORM\Column(
+            nullable: false,
+            options: [
+                'comment' => 'Количество товаров',
+                'default' => 0
+            ]
+        )
+    ]
+    private int $quantity = 0;
+
+    #[
+        ORM\ManyToOne(
+            inversedBy: 'cartProducts',
+            cascade: ['persist', 'remove']
+        )
+    ]
     private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'cartProducts')]
     private ?Cart $cart = null;
 
-    #[ORM\Column(options: ['comment' => 'Количество товаров'])]
-    private ?int $quantity = null;
+    /**
+     * Получить идентификатор товара в корзине
+     *
+     * @return integer|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     /**
-     * Получить идентификатор корзины
+     * Получить количество товаров
      *
      * @return integer
      */
-    public function getId(): int
+    public function getQuantity(): int
     {
-        return $this->id;
+        return $this->quantity;
+    }
+
+    /**
+     * Записать количество товаров
+     *
+     * @param integer $quantity
+     * @return self
+     */
+    public function setQuantity(int $quantity): self
+    {
+        $this->quantity = $quantity;
+
+        return $this;
     }
 
     /**
@@ -79,29 +121,6 @@ class CartProduct
     public function setCart(?Cart $cart): self
     {
         $this->cart = $cart;
-
-        return $this;
-    }
-
-    /**
-     * Получить количество товаров
-     *
-     * @return integer|null
-     */
-    public function getQuantity(): ?int
-    {
-        return $this->quantity;
-    }
-
-    /**
-     * Записать количество товаров
-     *
-     * @param integer $quantity
-     * @return self
-     */
-    public function setQuantity(int $quantity): self
-    {
-        $this->quantity = $quantity;
 
         return $this;
     }

@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Component\Exception\RepositoryException;
 use App\Entity\Cart;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 /**
  * @extends ServiceEntityRepository<Cart>
@@ -39,28 +42,27 @@ class CartRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Cart[] Returns an array of Cart objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Получить корзину по идентификатору сессии
+     *
+     * @param string $sessionId
+     * @param bool $checkEmpty
+     * @return Cart|null
+     * @throws RepositoryException
+     */
+    public function getCartBySessionId(string $sessionId, bool $checkEmpty = false): ?Cart
+    {
+        $cart = $this->findOneBy(['sessionId' => $sessionId]);
 
-//    public function findOneBySomeField($value): ?Cart
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if (null === $cart && $checkEmpty) {
+            throw new RepositoryException(
+                message: 'У вас пустая корзина',
+                code: ResponseAlias::HTTP_BAD_REQUEST,
+                responseCode: 'CART_NOT_FOUND',
+                logLevel: LogLevel::WARNING
+            );
+        }
+
+        return $cart;
+    }
 }

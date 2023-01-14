@@ -5,7 +5,7 @@ namespace App\Dto\ControllerResponse;
 use App\Component\Interface\Controller\ControllerResponseInterface;
 use JMS\Serializer\Annotation;
 
-class ExceptionDtoResponse implements ControllerResponseInterface
+class ExceptionResponse implements ControllerResponseInterface
 {
     /**
      * @var string
