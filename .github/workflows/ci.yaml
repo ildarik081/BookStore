@@ -51,13 +51,12 @@ jobs:
           arguments: 'src/ --level=7'
   
   psalm:
-        name: Psalm
-        runs-on: ubuntu-latest
-        steps:
-            -   uses: actions/checkout@v1
+    name: Psalm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
-            - name: Psalm
-              uses: docker://vimeo/psalm-github-actions
-
-            -   name: Run psalm
-                run: ./vendor/bin/psalm -c psalm.xml
+      - name: Run psalm
+        run: |
+          composer req vimeo/psalm
+          psalm -c psalm.xml
