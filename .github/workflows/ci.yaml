@@ -54,10 +54,10 @@ jobs:
     name: Psalm
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Psalm
         uses: docker://vimeo/psalm-github-actions
         with:
-          relative_dir: src/
+          configuration: psalm.xml
+          security_analysis: true
