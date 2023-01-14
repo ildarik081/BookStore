@@ -39,9 +39,12 @@ jobs:
   phpstan:
     name: PHPStan
     runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
-    - uses: php-actions/phpstan@v3
-      with:
-        php_version: 8.1
-        configuration: /usr/local/bin/phpstan.noen
+      - uses: actions/checkout@v2
+
+      - name: PHPStan
+        uses: chindit/actions-phpstan@v3
+        with:
+          arguments: 'src/ --level=7'
 
