@@ -59,4 +59,4 @@ jobs:
       - name: Run psalm
         run: |
           composer req vimeo/psalm
-          psalm -c psalm.xml
+          ./vendor/bin/psalm
