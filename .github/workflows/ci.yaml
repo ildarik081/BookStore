@@ -47,7 +47,7 @@ jobs:
 
       - name: Create xml
         run: |
-          cd var
+          cd var/cache
           ls -la
 
       - name: PHPStan
