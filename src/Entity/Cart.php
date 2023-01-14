@@ -57,7 +57,7 @@ class Cart
     ]
     private ?DateTimeInterface $dtUpdate = null;
 
-    #[ 
+    #[
         ORM\OneToMany(
             mappedBy: 'cart',
             targetEntity: CartProduct::class,

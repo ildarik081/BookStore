@@ -72,7 +72,7 @@ class CartService
         }
 
         $product = $this->productRepository->getProductById($request->id);
-
+        $a = [];
         $cart
             ->addCartProduct(
                 EntityFactory::createCartProduct($request->quantity, $product)
