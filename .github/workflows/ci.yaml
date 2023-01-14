@@ -56,5 +56,8 @@ jobs:
         steps:
             -   uses: actions/checkout@v1
 
+            - name: Psalm
+              uses: docker://vimeo/psalm-github-actions
+
             -   name: Run psalm
                 run: ./vendor/bin/psalm -c psalm.xml
