@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Component\Exception\RepositoryException;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 /**
  * @extends ServiceEntityRepository<Product>
@@ -37,5 +40,28 @@ class ProductRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * Получить товар по идентификатору
+     *
+     * @param integer $id
+     * @return Product
+     * @throws RepositoryException
+     */
+    public function getProductById(int $id): Product
+    {
+        $product = $this->find($id);
+        
+        if (null === $product) {
+            throw new RepositoryException(
+                message: 'Товара с идентификатором ' . $id . ' у нас нет',
+                code: ResponseAlias::HTTP_BAD_REQUEST,
+                responseCode: 'PRODUCT_NOT_FOUND',
+                logLevel: LogLevel::WARNING
+            );
+        }
+
+        return $product;
     }
 }

@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 class CartProduct
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue('SEQUENCE')]
+    #[ORM\GeneratedValue('IDENTITY')]
     #[
         ORM\Column(
             type: Types::INTEGER,
@@ -35,14 +35,19 @@ class CartProduct
     ]
     private int $quantity = 0;
 
-    #[ORM\ManyToOne(inversedBy: 'cartProducts')]
+    #[
+        ORM\ManyToOne(
+            inversedBy: 'cartProducts',
+            cascade: ['persist', 'remove']
+        )
+    ]
     private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'cartProducts')]
     private ?Cart $cart = null;
 
     /**
-     * Получить идентификатор корзины
+     * Получить идентификатор товара в корзине
      *
      * @return integer|null
      */

@@ -27,6 +27,15 @@ class CartResponse implements ControllerResponseInterface
     public string $dtUpdate;
 
     /**
+     * Общеяя стоимость товаров в корзине
+     *
+     * @var float
+     * @Annotation\Type("float")
+     * @Annotation\SerializedName("totalPrice")
+     */
+    public float $totalPrice;
+
+    /**
      * Общее количество товаров в корзине
      *
      * @var int

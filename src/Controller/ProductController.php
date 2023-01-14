@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Component\Exception\ProductException;
 use App\Component\Exception\ValidatorException;
+use App\Component\Factory\SimpleResponsFactory;
 use App\Component\Validator\ProductDtoValidator;
 use App\Dto\ControllerRequest\ProductListRequest;
 use App\Dto\ControllerRequest\ProductRequest;
@@ -147,11 +148,11 @@ class ProductController extends AbstractController
      * )
      * @OA\Tag(name="Product")
      * @param EntityProduct $product
-     * @return BaseResponse
+     * @return Product
      */
     #[Route('/item/{id}', name: 'item', methods: ['GET'])]
-    public function item(EntityProduct $product): EntityProduct
+    public function item(EntityProduct $product): Product
     {
-        return $product;
+        return SimpleResponsFactory::createProduct($product);
     }
 }

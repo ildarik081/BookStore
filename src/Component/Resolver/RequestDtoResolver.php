@@ -40,9 +40,9 @@ class RequestDtoResolver implements ArgumentValueResolverInterface
     public function resolve(Request $request, ArgumentMetadata $argument): Generator
     {
         if ($request->getSession()->has(self::SESSION)) {
-            $session = $request->getSession()->get(self::SESSION, '');
+            $session = $request->getSession()->get(self::SESSION);
         } else {
-            $session = uniqid('', true);
+            $session = uniqid(more_entropy: true);
             $request->getSession()->set(self::SESSION, $session);
         }
 

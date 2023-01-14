@@ -45,9 +45,24 @@ class SimpleResponsFactory
         $productDto->description = $product->getDescription();
         $productDto->author = $product->getAuthor();
         $productDto->images = self::createImages($product->getImages());
-        $productDto->url = $product->getUrl();
 
         return $productDto;
+    }
+
+    /**
+     * @param Collection $images
+     * @return DtoImage[]
+     */
+    public static function createImages(Collection $images): array
+    {
+        $result = [];
+
+        /** @var Image $image */
+        foreach ($images as $image) {
+            $result[] = self::createImage($image);
+        }
+
+        return $result;
     }
 
     /**
@@ -60,22 +75,6 @@ class SimpleResponsFactory
 
         foreach ($products as $product) {
             $result[] = self::createProduct($product);
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param Collection<int, Image>
-     * @return DtoImage[]
-     */
-    private static function createImages(Collection $images): array
-    {
-        $result = [];
-
-        /** @var Image $image */
-        foreach ($images as $image) {
-            $result[] = self::createImage($image);
         }
 
         return $result;

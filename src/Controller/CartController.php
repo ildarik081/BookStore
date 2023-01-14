@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\Component\Exception\RepositoryException;
+use App\Dto\CartProduct;
 use App\Dto\ControllerRequest\BaseRequest;
+use App\Dto\ControllerRequest\ProductCartRequest;
 use App\Dto\ControllerResponse\BaseResponse;
 use App\Dto\ControllerResponse\CartResponse;
+use App\Dto\ControllerResponse\SuccessResponse;
 use App\Service\CartService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,65 +45,60 @@ class CartController extends AbstractController
      * Добавить товар в корзину
      *
      * @OA\RequestBody(
-     *    description="",
-     *    @Model(type=BaseRequest::class)
+     *    description="Идентификатор товара и количество едениц",
+     *    @Model(type=ProductCartRequest::class)
      * )
      * @OA\Response(
      *      response=200,
-     *      description="",
-     *      @Model(type=BaseResponse::class)
+     *      description="Статус добавления товара в корзину",
+     *      @Model(type=SuccessResponse::class)
      * )
      * @OA\Tag(name="Cart")
-     * @param BaseRequest $request
-     * @return BaseResponse
+     * @param ProductCartRequest $request
+     * @return SuccessResponse
      */
     #[Route('/add', name: 'add', methods: ['POST'])]
-    public function add(BaseRequest $request): BaseResponse
+    public function add(ProductCartRequest $request): SuccessResponse
     {
-        return new BaseResponse();
+        return $this->cartService->addProduct($request);
     }
 
     /**
      * Удалить товар из корзины
      *
      * @OA\RequestBody(
-     *    description="",
-     *    @Model(type=BaseRequest::class)
+     *    description="Идентификатор товара и количество едениц",
+     *    @Model(type=ProductCartRequest::class)
      * )
      * @OA\Response(
      *      response=200,
-     *      description="",
-     *      @Model(type=BaseResponse::class)
+     *      description="Статус удаления товаров из корзины",
+     *      @Model(type=SuccessResponse::class)
      * )
      * @OA\Tag(name="Cart")
-     * @param BaseRequest $request
-     * @return BaseResponse
+     * @param ProductCartRequest $request
+     * @return SuccessResponse
      */
     #[Route('/remove', name: 'remove', methods: ['DELETE'])]
-    public function remove(): void
+    public function remove(ProductCartRequest $request): SuccessResponse
     {
-        return;
+        return $this->cartService->deleteProduct($request);
     }
 
     /**
      * Очистить корзину
      *
-     * @OA\RequestBody(
-     *    description="",
-     *    @Model(type=BaseRequest::class)
-     * )
      * @OA\Response(
      *      response=200,
-     *      description="",
-     *      @Model(type=BaseResponse::class)
+     *      description="Статус очистки корзины",
+     *      @Model(type=SuccessResponse::class)
      * )
      * @OA\Tag(name="Cart")
-     * @param BaseRequest $request
-     * @return BaseResponse
+     * @return SuccessResponse
      */
     #[Route('/clear', name: 'clear', methods: ['DELETE'])]
-    public function clear(): void
+    public function clear(BaseRequest $request): SuccessResponse
     {
-        return;
+        return $this->cartService->clearCart($request);
     }
 }

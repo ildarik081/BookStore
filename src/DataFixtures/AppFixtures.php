@@ -16,7 +16,7 @@ class AppFixtures extends Fixture
     {
     }
 
-    const SVG_FILE_PATH = '/file/products.csv';
+    private const SVG_FILE_PATH = '/file/products.csv';
 
     public function load(ObjectManager $manager): void
     {

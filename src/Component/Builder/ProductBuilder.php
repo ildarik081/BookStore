@@ -2,7 +2,12 @@
 
 namespace App\Component\Builder;
 
+use App\Component\Exception\BuilderException;
+use App\Dto\Image as ImageDto;
+use App\Entity\Image;
 use App\Entity\Product;
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class ProductBuilder implements BuilderInterface
 {
@@ -12,7 +17,7 @@ class ProductBuilder implements BuilderInterface
     private ?string $title = null;
     private ?string $description = null;
     private ?string $author = null;
-    private ?string $image = null;
+    private ?array $images = null;
     private ?string $url = null;
 
     /**
@@ -33,8 +38,14 @@ class ProductBuilder implements BuilderInterface
             ->setTitle($this->title)
             ->setDescription($this->description)
             ->setAuthor($this->author)
-            ->setImage($this->image)
             ->setUrl($this->url);
+
+        /** @var ImageDto $image */
+        foreach ($this->images as $image) {
+            $this->result->addImage(
+                $this->createImage($image)
+            );
+        }
 
         return $this;
     }
@@ -52,7 +63,7 @@ class ProductBuilder implements BuilderInterface
         $this->title = null;
         $this->description = null;
         $this->author = null;
-        $this->image = null;
+        $this->images = null;
         $this->url = null;
 
         return $this;
@@ -62,9 +73,19 @@ class ProductBuilder implements BuilderInterface
      * Получить Product
      *
      * @return Product
+     * @throws BuilderException
      */
     public function getResult(): Product
     {
+        if (null === $this->result) {
+            throw new BuilderException(
+                message: 'Не вызван метод build()',
+                code: ResponseAlias::HTTP_BAD_REQUEST,
+                responseCode: 'METHOD_BUILD_NOT_FOUND',
+                logLevel: LogLevel::CRITICAL
+            );
+        }
+
         $result = $this->result;
         $this->reset();
 
@@ -139,12 +160,12 @@ class ProductBuilder implements BuilderInterface
     /**
      * Добавить изобрадение
      *
-     * @param string|null $image
+     * @param ImageDto[]|null $images
      * @return ProductBuilder
      */
-    public function setImage(?string $image): ProductBuilder
+    public function setImage(?array $images): ProductBuilder
     {
-        $this->image = $image;
+        $this->images = $images;
 
         return $this;
     }
@@ -160,5 +181,22 @@ class ProductBuilder implements BuilderInterface
         $this->url = $url;
 
         return $this;
+    }
+
+    /**
+     * Собрать сущность Image
+     *
+     * @param ImageDto $image
+     * @return Image
+     */
+    private function createImage(ImageDto $image): Image
+    {
+        $imageEntity = new Image();
+        $imageEntity
+            ->setFileName($image->fileName)
+            ->setPath($image->path)
+            ->setDescription($image->description);
+
+        return $imageEntity;
     }
 }

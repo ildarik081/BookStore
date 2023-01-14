@@ -12,10 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\Table(options: ['comment' => 'Товары'])]
 #[ORM\Index(name: 'product_titlex', columns: ['title'])]
-class Product implements ControllerResponseInterface
+class Product
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue('SEQUENCE')]
+    #[ORM\GeneratedValue('IDENTITY')]
     #[
         ORM\Column(
             type: Types::INTEGER,
@@ -215,7 +215,7 @@ class Product implements ControllerResponseInterface
     /**
      * Получить коолекцию изображений товара
      *
-     * @return Collection<int, Image>
+     * @return Collection
      */
     public function getImages(): Collection
     {

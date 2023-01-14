@@ -4,6 +4,7 @@ namespace App\Dto\ControllerRequest;
 
 use JMS\Serializer\Annotation;
 use App\Component\Interface\AbstractDtoControllerRequest;
+use App\Dto\Image;
 
 class ProductRequest extends AbstractDtoControllerRequest
 {
@@ -55,11 +56,11 @@ class ProductRequest extends AbstractDtoControllerRequest
     /**
      * Ссылка на изображение товара
      *
-     * @var string|null
-     * @Annotation\Type("string")
-     * @Annotation\SerializedName("image")
+     * @var Image[]
+     * @Annotation\Type("array")
+     * @Annotation\SerializedName("array<App\Dto\Image>")
      */
-    public ?string $image = null;
+    public array $image = [];
 
     /**
      * Ссылка для скачивания

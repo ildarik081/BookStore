@@ -46,14 +46,15 @@ class CartRepository extends ServiceEntityRepository
      * Получить корзину по идентификатору сессии
      *
      * @param string $sessionId
-     * @return Cart
+     * @param bool $checkEmpty
+     * @return Cart|null
      * @throws RepositoryException
      */
-    public function getCartBySessionId(string $sessionId): Cart
+    public function getCartBySessionId(string $sessionId, bool $checkEmpty = false): ?Cart
     {
         $cart = $this->findOneBy(['sessionId' => $sessionId]);
 
-        if (null === $cart) {
+        if (null === $cart && $checkEmpty) {
             throw new RepositoryException(
                 message: 'У вас пустая корзина',
                 code: ResponseAlias::HTTP_BAD_REQUEST,

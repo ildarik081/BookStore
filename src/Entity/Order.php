@@ -19,7 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Order
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue('SEQUENCE')]
+    #[ORM\GeneratedValue('IDENTITY')]
     #[
         ORM\Column(
             type: Types::INTEGER,
@@ -55,7 +55,7 @@ class Order
             options: [
                 'comment' => 'Итоговая стоимоть заказа',
                 'default' => 0
-                ]
+            ]
         )
     ]
     private ?float $totalPrice = null;

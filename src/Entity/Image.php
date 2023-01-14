@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Image
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue('SEQUENCE')]
+    #[ORM\GeneratedValue('IDENTITY')]
     #[
         ORM\Column(
             type: Types::INTEGER,
