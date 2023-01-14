@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run PHPCS
+      - name: Install PHPCS
         run: |
           curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
           php phpcs.phar --version
@@ -30,6 +30,9 @@ jobs:
           files: "**.php"
           phpcs_path: php phpcs.phar
           standard: phpcs.xml
+
+      - name: Run PHPCS
+        run: phpcs
 
   phpmd:
     name: PHPMD
