@@ -46,7 +46,7 @@ jobs:
         run: composer ins --prefer-dist --no-progress --no-suggest
 
       - name: Create xml
-        run: touch /var/cache/test/App_KernelTestDebugContainer.xml
+        run: ls -la
 
       - name: PHPStan
         uses: chindit/actions-phpstan@master
