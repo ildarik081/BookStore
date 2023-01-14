@@ -47,8 +47,8 @@ jobs:
 
   phpstan:
     name: PHPStan
-      runs-on: ubuntu-latest
-      steps:
-        - name: Run PHPStan
-          run: vendor/bin/phpstan analyse src tests --level=max --no-progress
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyze -c phpstan.neon
 
