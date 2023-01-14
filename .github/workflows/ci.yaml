@@ -29,3 +29,19 @@ jobs:
           files: "**.php"
           phpcs_path: php phpcs.phar
           standard: phpcs.xml
+
+  phpmd:
+    name: PHPMD
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP environment
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          tools: phpmd
+
+      - name: Run PHPMD
+        run: phpmd . github phpmd.xml --exclude 'tests/*,vendor/*'
