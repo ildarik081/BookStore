@@ -46,7 +46,6 @@ jobs:
         run: composer ins --prefer-dist --no-progress --no-suggest
 
       - name: PHPStan
-        run: php bin/console cache:clear
         uses: chindit/actions-phpstan@master
         with:
           arguments: 'src/ --level=7'
