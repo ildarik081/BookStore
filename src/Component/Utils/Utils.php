@@ -27,9 +27,20 @@ class Utils
         }
 
         $dataFile = fopen($csvFilePath, 'r');
-        $dataCSV = [];
 
-        while (($handle = fgetcsv($dataFile, 0, ';')) !== false) {
+        if (false === $dataFile) {
+            throw new UtilsException(
+                message: 'Ошибка при открытии файла ' . $csvFilePath,
+                code: ResponseAlias::HTTP_BAD_REQUEST,
+                responseCode: 'UTILS_FILE_ERROR',
+                logLevel: LogLevel::CRITICAL
+            );
+        }
+
+        $dataCSV = [];
+        $handle = fgetcsv($dataFile, 0, ';');
+
+        while ($handle !== false) {
             $dataCSV[] = $handle;
         }
 

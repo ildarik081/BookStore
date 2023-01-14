@@ -159,7 +159,7 @@ class CartService
      * Достать товар из коллекци по id
      *
      * @param Cart $cart
-     * @param ProductCartRequest $request
+     * @param int $id
      * @return CartProduct
      * @throws CartException
      */

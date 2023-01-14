@@ -52,7 +52,7 @@ class ProductRepository extends ServiceEntityRepository
     public function getProductById(int $id): Product
     {
         $product = $this->find($id);
-        
+
         if (null === $product) {
             throw new RepositoryException(
                 message: 'Товара с идентификатором ' . $id . ' у нас нет',
