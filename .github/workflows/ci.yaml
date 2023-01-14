@@ -48,7 +48,9 @@ jobs:
       - name: Create xml
         run: |
           cd var/cache
-          ls -la
+          mkdir 777 test
+          cd test
+          touch App_KernelTestDebugContainer.xml
 
       - name: PHPStan
         uses: chindit/actions-phpstan@master
