@@ -7,7 +7,7 @@ use App\Component\Exception\BuilderException;
 use App\Component\Exception\CartException;
 use App\Component\Exception\RepositoryException;
 use App\Component\Factory\EntityFactory;
-use App\Component\Factory\SimpleResponsFactory;
+use App\Component\Factory\SimpleResponseFactory;
 use App\Dto\ControllerRequest\BaseRequest;
 use App\Dto\ControllerRequest\ProductCartRequest;
 use App\Dto\ControllerResponse\CartResponse;
@@ -68,7 +68,7 @@ class CartService
         }
 
         if ($this->checkDuplicatesProduct($request, $cart)) {
-            return SimpleResponsFactory::createSuccessResponse(true);
+            return SimpleResponseFactory::createSuccessResponse(true);
         }
 
         $product = $this->productRepository->getProductById($request->id);
@@ -81,7 +81,7 @@ class CartService
 
         $this->cartRepository->save($cart, true);
 
-        return SimpleResponsFactory::createSuccessResponse(true);
+        return SimpleResponseFactory::createSuccessResponse(true);
     }
 
     /**
@@ -109,7 +109,7 @@ class CartService
         }
 
 
-        return SimpleResponsFactory::createSuccessResponse(true);
+        return SimpleResponseFactory::createSuccessResponse(true);
     }
 
     /**
@@ -123,13 +123,14 @@ class CartService
     {
         $cart = $this->cartRepository->getCartBySessionId($request->session, true);
 
+        /** @var CartProduct $cartProduct */
         foreach ($cart->getCartProducts() as $cartProduct) {
             $cart->removeCartProduct($cartProduct);
         }
 
         $this->cartRepository->save($cart, true);
 
-        return SimpleResponsFactory::createSuccessResponse(true);
+        return SimpleResponseFactory::createSuccessResponse(true);
     }
 
     /**
@@ -156,7 +157,7 @@ class CartService
     }
 
     /**
-     * Достать товар из коллекци по id
+     * Достать товар из коллекции по id
      *
      * @param Cart $cart
      * @param int $id

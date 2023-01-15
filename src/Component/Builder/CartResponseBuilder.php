@@ -3,7 +3,7 @@
 namespace App\Component\Builder;
 
 use App\Component\Exception\BuilderException;
-use App\Component\Factory\SimpleResponsFactory;
+use App\Component\Factory\SimpleResponseFactory;
 use App\Component\Utils\Aliases;
 use App\Dto\CartProduct;
 use App\Dto\ControllerResponse\CartResponse;
@@ -127,7 +127,9 @@ class CartResponseBuilder implements BuilderInterface
             $cartProductDto->title = $cartProduct->getProduct()?->getTitle();
             $cartProductDto->description = $cartProduct->getProduct()?->getDescription();
             $cartProductDto->author = $cartProduct->getProduct()?->getAuthor();
-            $cartProductDto->images = SimpleResponsFactory::createImages($cartProduct->getProduct()?->getImages());
+            $cartProductDto->images = SimpleResponseFactory::createImagesFromCollection(
+                $cartProduct->getProduct()?->getImages()
+            );
             $result[] = $cartProductDto;
         }
 

@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Component\Exception\RepositoryException;
 use App\Entity\Image;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 /**
  * @extends ServiceEntityRepository<Image>
@@ -37,5 +40,28 @@ class ImageRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * Получить товар по идентификатору
+     *
+     * @param integer $id
+     * @return Image
+     * @throws RepositoryException
+     */
+    public function getImageById(int $id): Image
+    {
+        $image = $this->find($id);
+
+        if (null === $image) {
+            throw new RepositoryException(
+                message: 'Изображения с идентификатором ' . $id . ' у нас нет',
+                code: ResponseAlias::HTTP_BAD_REQUEST,
+                responseCode: 'IMAGE_NOT_FOUND',
+                logLevel: LogLevel::WARNING
+            );
+        }
+
+        return $image;
     }
 }

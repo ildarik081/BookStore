@@ -16,6 +16,15 @@ class Aliases
     /** Формат даты и времени */
     public const DT_FORMAT = 'd.m.Y H:i:s';
 
+    /** Наименование свойства при загрузке изображения */
+    public const UPLOAD_PROPERTY_NAME_IMAGE = 'image';
+
+    /** Ограничение на размер загружаемого файла (2МБ) */
+    public const FILE_SIZE = 2 * 1024 * 1024;
+
+    /** Допустимые расширения файлов */
+    public const TYPE_FILE = ['jpg', 'jpeg', 'webp'];
+
     public const ORDER_STATUSES = [
         'new' => [
             'value' => 'Новый заказ',

@@ -2,17 +2,24 @@
 
 namespace App\Controller;
 
-use App\Dto\ControllerRequest\BaseRequest;
-use App\Dto\ControllerResponse\BaseResponse;
+use App\Component\Exception\ValidatorException;
+use App\Component\Validator\ImageValidator;
+use App\Dto\ControllerRequest\ImageRequest;
+use App\Dto\ControllerRequest\ListRequest;
+use App\Dto\ControllerResponse\ImageListResponse;
+use App\Dto\ControllerResponse\SuccessResponse;
+use App\Dto\Image as DtoImage;
+use App\Service\ImageService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Symfony\Component\HttpFoundation\Request;
 
 #[Route('/api/image', name: 'api_image_')]
 class ImageController extends AbstractController
 {
-    public function __construct()
+    public function __construct(private readonly ImageService $imageService)
     {
     }
 
@@ -37,38 +44,59 @@ class ImageController extends AbstractController
      * @OA\Response(
      *      response=200,
      *      description="Список изображений",
-     *      @Model(type=BaseResponse::class)
+     *      @Model(type=ImageListResponse::class)
      * )
      * @OA\Tag(name="Image")
-     * @param BaseRequest $request
-     * @return BaseResponse
+     * @param ListRequest $request
+     * @return ImageListResponse
      */
     #[Route('/list', name: 'list', methods: ['GET'])]
-    public function list(BaseRequest $request): BaseResponse
+    public function list(ListRequest $request): ImageListResponse
     {
-        return new BaseResponse();
+        return $this->imageService->getImageList($request);
     }
 
     /**
      * Добавить изображение
      *
      * @OA\RequestBody(
-     *    description="Данные об изображении",
-     *    @Model(type=ProductRequest::class)
+     *      required=true,
+     *      description="Файл изображения",
+     *      @OA\MediaType(
+     *          mediaType="multipart/form-data",
+     *          @OA\Schema(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="image",
+     *                  type="array",
+     *                  @OA\Items(
+     *                       type="string",
+     *                       format="binary",
+     *                  )
+     *               ),
+     *               @OA\Property(
+     *                  property="description",
+     *                  type="string"
+     *               ),
+     *           )
+     *      )
      * )
      * @OA\Response(
      *      response=200,
-     *      description="Добавленный изображение",
-     *      @Model(type=Product::class)
+     *      description="Информация о добавленном изображении",
+     *      @Model(type=DtoImage::class)
      * )
      * @OA\Tag(name="Image")
-     * @param BaseRequest $request
-     * @return BaseResponse
+     * @param Request $request
+     * @return DtoImage
+     * @throws ValidatorException
      */
     #[Route('/add', name: 'add', methods: ['POST'])]
-    public function add(BaseRequest $request): BaseResponse
+    public function add(Request $request): DtoImage
     {
-        return new BaseResponse();
+        ImageValidator::validateImageRequest($request);
+
+        return $this->imageService->addImage($request);
     }
 
     /**
@@ -77,22 +105,22 @@ class ImageController extends AbstractController
      * id — обязательный параметр
      *
      * @OA\RequestBody(
-     *    description="Данные о товаре",
-     *    @Model(type=ProductRequest::class)
+     *    description="Описание изображения",
+     *    @Model(type=ImageRequest::class)
      * )
      * @OA\Response(
      *      response=200,
-     *      description="Измененный данные об изображении",
-     *      @Model(type=BaseResponse::class)
+     *      description="Статус редактирования информации об изображении",
+     *      @Model(type=SuccessResponse::class)
      * )
      * @OA\Tag(name="Image")
-     * @param BaseRequest $request
-     * @return BaseResponse
+     * @param ImageRequest $request
+     * @return SuccessResponse
      */
     #[Route('/edit', name: 'edit', methods: ['PUT'])]
-    public function edit(BaseRequest $request): BaseResponse
+    public function edit(ImageRequest $request): SuccessResponse
     {
-        return new BaseResponse();
+        return $this->imageService->editImage($request);
     }
 
     /**
@@ -102,38 +130,20 @@ class ImageController extends AbstractController
      *
      * @OA\RequestBody(
      *    description="Данные об изображении (можно передать только id)",
-     *    @Model(type=BaseRequest::class)
+     *    @Model(type=ImageRequest::class)
      * )
      * @OA\Response(
      *      response=200,
-     *      description="Статус удаления товара",
-     *      @Model(type=BaseResponse::class)
+     *      description="Статус удаления изображения",
+     *      @Model(type=SuccessResponse::class)
      * )
      * @OA\Tag(name="Image")
-     * @param BaseRequest $request
-     * @return BaseResponse
+     * @param ImageRequest $request
+     * @return SuccessResponse
      */
     #[Route('/delete', name: 'delete', methods: ['DELETE'])]
-    public function delete(BaseRequest $request): BaseResponse
+    public function delete(ImageRequest $request): SuccessResponse
     {
-        return new BaseResponse();
-    }
-
-    /**
-     * Получить изображение по идентификатору
-     *
-     * @OA\Response(
-     *      response=200,
-     *      description="Данные об изображении",
-     *      @Model(type=BaseResponse::class)
-     * )
-     * @OA\Tag(name="Product")
-     * @param BaseRequest $product
-     * @return BaseResponse
-     */
-    #[Route('/item/{id}', name: 'item', methods: ['GET'])]
-    public function item(BaseRequest $request): BaseResponse
-    {
-        return new BaseResponse();
+        return $this->imageService->deleteImage($request);
     }
 }

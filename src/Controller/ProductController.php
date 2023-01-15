@@ -2,11 +2,12 @@
 
 namespace App\Controller;
 
+use App\Component\Exception\BuilderException;
 use App\Component\Exception\ProductException;
 use App\Component\Exception\ValidatorException;
-use App\Component\Factory\SimpleResponsFactory;
+use App\Component\Factory\SimpleResponseFactory;
 use App\Component\Validator\ProductDtoValidator;
-use App\Dto\ControllerRequest\ProductListRequest;
+use App\Dto\ControllerRequest\ListRequest;
 use App\Dto\ControllerRequest\ProductRequest;
 use App\Dto\ControllerResponse\ProductListResponse;
 use App\Dto\ControllerResponse\SuccessResponse;
@@ -52,11 +53,11 @@ class ProductController extends AbstractController
      *      @Model(type=ProductListResponse::class)
      * )
      * @OA\Tag(name="Product")
-     * @param ProductListRequest $request
+     * @param ListRequest $request
      * @return ProductListResponse
      */
     #[Route('/list', name: 'list', methods: ['GET'])]
-    public function list(ProductListRequest $request): ProductListResponse
+    public function list(ListRequest $request): ProductListResponse
     {
         return $this->productService->getProductList($request);
     }
@@ -77,6 +78,7 @@ class ProductController extends AbstractController
      * @param ProductRequest $request
      * @return Product
      * @throws ValidatorException
+     * @throws BuilderException
      */
     #[Route('/add', name: 'add', methods: ['POST'])]
     public function add(ProductRequest $request): Product
@@ -105,6 +107,7 @@ class ProductController extends AbstractController
      * @return Product
      * @throws ValidatorException
      * @throws ProductException
+     * @throws BuilderException
      */
     #[Route('/edit', name: 'edit', methods: ['PUT'])]
     public function edit(ProductRequest $request): Product
@@ -154,6 +157,6 @@ class ProductController extends AbstractController
     #[Route('/item/{id}', name: 'item', methods: ['GET'])]
     public function item(EntityProduct $product): Product
     {
-        return SimpleResponsFactory::createProduct($product);
+        return SimpleResponseFactory::createProduct($product);
     }
 }

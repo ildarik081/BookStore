@@ -5,7 +5,7 @@ namespace App\Dto\ControllerRequest;
 use App\Component\Interface\AbstractDtoControllerRequest;
 use JMS\Serializer\Annotation;
 
-class ProductListRequest extends AbstractDtoControllerRequest
+class ListRequest extends AbstractDtoControllerRequest
 {
     /**
      * Сортировка (DESC по умолчанию)
