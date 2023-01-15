@@ -29,6 +29,11 @@ class DtoResponseSubscriber implements EventSubscriberInterface
         $event->setResponse($response);
     }
 
+    /**
+     * @return array{
+     *      'kernel.view' => string
+     * }
+     */
     public static function getSubscribedEvents(): array
     {
         return [

@@ -12,8 +12,6 @@ use App\Dto\ControllerResponse\SuccessResponse;
 use App\Dto\Image;
 use App\Repository\ImageRepository;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response as ResponseAlias;
-use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ImageService
