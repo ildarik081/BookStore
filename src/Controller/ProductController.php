@@ -8,7 +8,6 @@ use App\Component\Factory\SimpleResponsFactory;
 use App\Component\Validator\ProductDtoValidator;
 use App\Dto\ControllerRequest\ProductListRequest;
 use App\Dto\ControllerRequest\ProductRequest;
-use App\Dto\ControllerResponse\BaseResponse;
 use App\Dto\ControllerResponse\ProductListResponse;
 use App\Dto\ControllerResponse\SuccessResponse;
 use App\Dto\Product;
@@ -117,6 +116,8 @@ class ProductController extends AbstractController
 
     /**
      * Удалить товар
+     *
+     * id — обязательный параметр
      *
      * @OA\RequestBody(
      *    description="Данные о товаре (можно передать только id)",

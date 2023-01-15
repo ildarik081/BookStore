@@ -9,6 +9,8 @@ nelmio_api_doc:
         tags:
         - name: Product
           description: Ручки для работы с продуктами
+        - name: Image
+          description: Ручки для работы с изображениями
         - name: Cart
           description: Ручки для работы с корзиной
         - name: Order
