@@ -30,3 +30,8 @@ services:
         class: App\DataFixtures\AppFixtures
         arguments:
             $workingDir: '%working_dir%'
+
+    App\Service\ImageService:
+        class: App\Service\ImageService
+        arguments:
+            $workingDir: '%working_dir%'

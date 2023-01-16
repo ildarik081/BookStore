@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
+use App\Component\Exception\BuilderException;
+use App\Component\Exception\CartException;
 use App\Component\Exception\RepositoryException;
-use App\Dto\CartProduct;
 use App\Dto\ControllerRequest\BaseRequest;
 use App\Dto\ControllerRequest\ProductCartRequest;
-use App\Dto\ControllerResponse\BaseResponse;
 use App\Dto\ControllerResponse\CartResponse;
 use App\Dto\ControllerResponse\SuccessResponse;
 use App\Service\CartService;
@@ -34,6 +34,7 @@ class CartController extends AbstractController
      * @param BaseRequest $request
      * @return CartResponse
      * @throws RepositoryException
+     * @throws BuilderException
      */
     #[Route('', name: 'get_cart', methods: ['GET'])]
     public function getCart(BaseRequest $request): CartResponse
@@ -45,7 +46,7 @@ class CartController extends AbstractController
      * Добавить товар в корзину
      *
      * @OA\RequestBody(
-     *    description="Идентификатор товара и количество едениц",
+     *    description="Идентификатор товара и количество единиц",
      *    @Model(type=ProductCartRequest::class)
      * )
      * @OA\Response(
@@ -56,6 +57,7 @@ class CartController extends AbstractController
      * @OA\Tag(name="Cart")
      * @param ProductCartRequest $request
      * @return SuccessResponse
+     * @throws RepositoryException
      */
     #[Route('/add', name: 'add', methods: ['POST'])]
     public function add(ProductCartRequest $request): SuccessResponse
@@ -67,7 +69,7 @@ class CartController extends AbstractController
      * Удалить товар из корзины
      *
      * @OA\RequestBody(
-     *    description="Идентификатор товара и количество едениц",
+     *    description="Идентификатор товара и количество единиц",
      *    @Model(type=ProductCartRequest::class)
      * )
      * @OA\Response(
@@ -78,6 +80,8 @@ class CartController extends AbstractController
      * @OA\Tag(name="Cart")
      * @param ProductCartRequest $request
      * @return SuccessResponse
+     * @throws CartException
+     * @throws RepositoryException
      */
     #[Route('/remove', name: 'remove', methods: ['DELETE'])]
     public function remove(ProductCartRequest $request): SuccessResponse
@@ -95,6 +99,7 @@ class CartController extends AbstractController
      * )
      * @OA\Tag(name="Cart")
      * @return SuccessResponse
+     * @throws RepositoryException
      */
     #[Route('/clear', name: 'clear', methods: ['DELETE'])]
     public function clear(BaseRequest $request): SuccessResponse

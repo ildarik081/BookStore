@@ -3,14 +3,16 @@
 namespace App\Service;
 
 use App\Component\Builder\ProductBuilder;
+use App\Component\Exception\BuilderException;
 use App\Component\Exception\ProductException;
-use App\Component\Factory\SimpleResponsFactory;
-use App\Dto\ControllerRequest\ProductListRequest;
+use App\Component\Factory\SimpleResponseFactory;
+use App\Dto\ControllerRequest\ListRequest;
 use App\Dto\ControllerRequest\ProductRequest;
 use App\Dto\ControllerResponse\ProductListResponse;
 use App\Dto\ControllerResponse\SuccessResponse;
 use App\Dto\Product;
 use App\Entity\Product as EntityProduct;
+use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
@@ -19,10 +21,12 @@ class ProductService
 {
     /**
      * @param ProductRepository $productRepository
+     * @param ImageRepository $imageRepository
      * @param ProductBuilder $builder
      */
     public function __construct(
         private readonly ProductRepository $productRepository,
+        private readonly ImageRepository $imageRepository,
         private readonly ProductBuilder $builder
     ) {
     }
@@ -30,10 +34,10 @@ class ProductService
     /**
      * Получить список товаров
      *
-     * @param ProductListRequest $request
+     * @param ListRequest $request
      * @return ProductListResponse
      */
-    public function getProductList(ProductListRequest $request): ProductListResponse
+    public function getProductList(ListRequest $request): ProductListResponse
     {
         $products = $this
             ->productRepository
@@ -44,7 +48,7 @@ class ProductService
                 offset: $request->offset
             );
 
-        return SimpleResponsFactory::createProductListResponse($products);
+        return SimpleResponseFactory::createProductListResponse($products);
     }
 
     /**
@@ -52,6 +56,7 @@ class ProductService
      *
      * @param ProductRequest $request
      * @return Product
+     * @throws BuilderException
      */
     public function addProduct(ProductRequest $request): Product
     {
@@ -63,12 +68,13 @@ class ProductService
             ->setDescription($request->description)
             ->setAuthor($request->author)
             ->setImage($request->image)
+            ->setImageRepository($this->imageRepository)
             ->build()
             ->getResult();
 
         $this->productRepository->save($product, true);
 
-        return SimpleResponsFactory::createProduct($product);
+        return SimpleResponseFactory::createProduct($product);
     }
 
     /**
@@ -77,6 +83,7 @@ class ProductService
      * @param ProductRequest $request
      * @return Product
      * @throws ProductException
+     * @throws BuilderException
      */
     public function editProduct(ProductRequest $request): Product
     {
@@ -91,12 +98,13 @@ class ProductService
             ->setDescription($request->description)
             ->setAuthor($request->author)
             ->setImage($request->image)
+            ->setImageRepository($this->imageRepository)
             ->build()
             ->getResult();
 
         $this->productRepository->save($product, true);
 
-        return SimpleResponsFactory::createProduct($product);
+        return SimpleResponseFactory::createProduct($product);
     }
 
     /**
@@ -111,7 +119,7 @@ class ProductService
         $product = $this->getProductById($request->id);
         $this->productRepository->remove($product, true);
 
-        return SimpleResponsFactory::createSuccessResponse(true);
+        return SimpleResponseFactory::createSuccessResponse(true);
     }
 
     /**
@@ -125,7 +133,7 @@ class ProductService
     {
         $product = $this->getProductById($request->id);
 
-        return SimpleResponsFactory::createProduct($product);
+        return SimpleResponseFactory::createProduct($product);
     }
 
     /**

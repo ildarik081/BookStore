@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\OrderRepository;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,15 +31,6 @@ class Order
     ]
     private ?int $id = null;
 
-    #[ORM\ManyToOne]
-    #[
-        ORM\JoinColumn(
-            nullable: false,
-            options: ['comment' => 'Связь со статусами']
-        )
-    ]
-    private ?OrderStatus $status = null;
-
     #[
         ORM\Column(
             type: Types::STRING,
@@ -53,22 +46,12 @@ class Order
             type: Types::FLOAT,
             nullable: false,
             options: [
-                'comment' => 'Итоговая стоимоть заказа',
+                'comment' => 'Итоговая стоимость заказа',
                 'default' => 0
             ]
         )
     ]
     private ?float $totalPrice = null;
-
-    #[
-        ORM\Column(
-            type: Types::STRING,
-            nullable: true,
-            length: 180,
-            options: ['comment' => 'Email получателя']
-        )
-    ]
-    private ?string $email = null;
 
     #[
         ORM\Column(
@@ -79,6 +62,35 @@ class Order
     ]
     private ?DateTimeInterface $dtCreate = null;
 
+    #[
+        ORM\OneToMany(
+            mappedBy: 'order',
+            targetEntity: HistoryOrderStatus::class,
+            cascade: ['persist'],
+            orphanRemoval: true
+        )
+    ]
+    private Collection $historyOrderStatus;
+
+    #[
+        ORM\OneToMany(
+            mappedBy: 'order',
+            cascade: ['persist'],
+            targetEntity: OrderProduct::class
+        )
+    ]
+    private Collection $orderProduct;
+
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Recipient $recipient = null;
+
+    public function __construct()
+    {
+        $this->historyOrderStatus = new ArrayCollection();
+        $this->orderProduct = new ArrayCollection();
+    }
+
     /**
      * Получить идентификатор заказа
      *
@@ -87,29 +99,6 @@ class Order
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * Получить статус заказа
-     *
-     * @return OrderStatus|null
-     */
-    public function getStatus(): ?OrderStatus
-    {
-        return $this->status;
-    }
-
-    /**
-     * Записать статус заказа
-     *
-     * @param OrderStatus|null $status
-     * @return self
-     */
-    public function setStatus(?OrderStatus $status): self
-    {
-        $this->status = $status;
-
-        return $this;
     }
 
     /**
@@ -159,29 +148,6 @@ class Order
     }
 
     /**
-     * Получить email получателя
-     *
-     * @return string|null
-     */
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    /**
-     * Записать email получателя
-     *
-     * @param string $email
-     * @return self
-     */
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    /**
      * Получить дату создания заказа
      *
      * @return DateTimeInterface|null
@@ -201,6 +167,115 @@ class Order
     public function setDtCreate(DateTimeInterface $dtCreate): self
     {
         $this->dtCreate = $dtCreate;
+
+        return $this;
+    }
+
+    /**
+     * Получить историю статусов заказа
+     *
+     * @return Collection
+     */
+    public function getHistoryOrderStatus(): Collection
+    {
+        return $this->historyOrderStatus;
+    }
+
+    /**
+     * Добавить в историю статус заказа
+     *
+     * @param HistoryOrderStatus $historyOrderStatus
+     * @return self
+     */
+    public function addHistoryOrderStatus(HistoryOrderStatus $historyOrderStatus): self
+    {
+        if (!$this->historyOrderStatus->contains($historyOrderStatus)) {
+            $this->historyOrderStatus->add($historyOrderStatus);
+            $historyOrderStatus->setOrder($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Удалить из истории статус заказа
+     *
+     * @param HistoryOrderStatus $historyOrderStatus
+     * @return self
+     */
+    public function removeHistoryOrderStatus(HistoryOrderStatus $historyOrderStatus): self
+    {
+        if ($this->historyOrderStatus->removeElement($historyOrderStatus)) {
+            if ($historyOrderStatus->getOrder() === $this) {
+                $historyOrderStatus->setOrder(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Получить товары заказа
+     *
+     * @return Collection
+     */
+    public function getOrderProduct(): Collection
+    {
+        return $this->orderProduct;
+    }
+
+    /**
+     * Добавить товар в заказ
+     *
+     * @param OrderProduct $orderProduct
+     * @return self
+     */
+    public function addOrderProduct(OrderProduct $orderProduct): self
+    {
+        if (!$this->orderProduct->contains($orderProduct)) {
+            $this->orderProduct->add($orderProduct);
+            $orderProduct->setOrder($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Удалить товар из заказа
+     *
+     * @param OrderProduct $orderProduct
+     * @return self
+     */
+    public function removeOrderProduct(OrderProduct $orderProduct): self
+    {
+        if ($this->orderProduct->removeElement($orderProduct)) {
+            if ($orderProduct->getOrder() === $this) {
+                $orderProduct->setOrder(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Получить информацию о получателе
+     *
+     * @return Recipient|null
+     */
+    public function getRecipient(): ?Recipient
+    {
+        return $this->recipient;
+    }
+
+    /**
+     * Записать информацию о получателе
+     *
+     * @param Recipient|null $recipient
+     * @return self
+     */
+    public function setRecipient(?Recipient $recipient): self
+    {
+        $this->recipient = $recipient;
 
         return $this;
     }

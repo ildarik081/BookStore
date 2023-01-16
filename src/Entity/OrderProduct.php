@@ -2,16 +2,16 @@
 
 namespace App\Entity;
 
-use App\Repository\CartProductRepository;
+use App\Repository\OrderProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Товары в корзине
+ * Товары в заказе
  */
-#[ORM\Entity(repositoryClass: CartProductRepository::class)]
-#[ORM\Table(options: ['comment' => 'Товары в корзине'])]
-class CartProduct
+#[ORM\Entity(repositoryClass: OrderProductRepository::class)]
+#[ORM\Table(options: ['comment' => 'Товары в заказе'])]
+class OrderProduct
 {
     #[ORM\Id]
     #[ORM\GeneratedValue('IDENTITY')]
@@ -19,7 +19,7 @@ class CartProduct
         ORM\Column(
             type: Types::INTEGER,
             nullable: false,
-            options: ['comment' => 'Идентификатор товара в корзине']
+            options: ['comment' => 'Идентификатор товара в заказе']
         )
     ]
     private ?int $id = null;
@@ -37,22 +37,17 @@ class CartProduct
 
     #[
         ORM\ManyToOne(
-            inversedBy: 'cartProducts',
             cascade: ['persist']
         )
     ]
     private ?Product $product = null;
 
-    #[
-        ORM\ManyToOne(
-            inversedBy: 'cartProducts',
-            cascade: ['persist']
-        )
-    ]
-    private ?Cart $cart = null;
+    #[ORM\ManyToOne(inversedBy: 'orderProduct')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Order $order = null;
 
     /**
-     * Получить идентификатор товара в корзине
+     * Получить идентификатор товара в заказе
      *
      * @return integer|null
      */
@@ -66,7 +61,7 @@ class CartProduct
      *
      * @return integer
      */
-    public function getQuantity(): int
+    public function getQuantity(): ?int
     {
         return $this->quantity;
     }
@@ -107,25 +102,14 @@ class CartProduct
         return $this;
     }
 
-    /**
-     * Получить корзину
-     *
-     * @return Cart|null
-     */
-    public function getCart(): ?Cart
+    public function getOrder(): ?Order
     {
-        return $this->cart;
+        return $this->order;
     }
 
-    /**
-     * Записать корзину
-     *
-     * @param Cart|null $cart
-     * @return self
-     */
-    public function setCart(?Cart $cart): self
+    public function setOrder(?Order $order): self
     {
-        $this->cart = $cart;
+        $this->order = $order;
 
         return $this;
     }

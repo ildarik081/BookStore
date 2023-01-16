@@ -2,9 +2,10 @@
 
 namespace App\Dto;
 
+use App\Component\Interface\Controller\ControllerResponseInterface;
 use JMS\Serializer\Annotation;
 
-class Image
+class Image implements ControllerResponseInterface
 {
     /**
      * Идентификатор изображения
