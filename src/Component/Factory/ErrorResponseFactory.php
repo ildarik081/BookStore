@@ -24,6 +24,7 @@ class ErrorResponseFactory
         if ($exception instanceof AbstractApiException) {
             $responseDto->message = $exception->getMessage();
             $responseDto->code = $exception->getResponseCode();
+            $responseDto->trace = $exception->getTrace();
 
             $response = new JsonResponse(
                 $responseDto,
@@ -37,7 +38,14 @@ class ErrorResponseFactory
                 : $exception->getMessage();
 
             $responseDto->code = self::UNKNOWN_ERROR;
-            $response = new JsonResponse($responseDto, Response::HTTP_BAD_REQUEST, [], false);
+            $responseDto->trace = $exception->getTrace();
+
+            $response = new JsonResponse(
+                $responseDto,
+                Response::HTTP_BAD_REQUEST,
+                [],
+                false
+            );
         }
 
         return $response;
