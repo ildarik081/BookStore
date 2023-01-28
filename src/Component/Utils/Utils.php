@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 class Utils
 {
     /**
-     * Конвертация CSV файлв в массив
+     * Конвертация CSV файлов в массив
      *
      * @param string $csvFilePath
      * @return array
@@ -38,9 +38,8 @@ class Utils
         }
 
         $dataCSV = [];
-        $handle = fgetcsv($dataFile, 0, ';');
 
-        while ($handle !== false) {
+        while (($handle = fgetcsv($dataFile, 0, ';')) !== false) {
             $dataCSV[] = $handle;
         }
 

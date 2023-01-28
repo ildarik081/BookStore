@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Component\Interfaces\ProductInterface;
 use App\Repository\OrderProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,8 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Товары в заказе
  */
 #[ORM\Entity(repositoryClass: OrderProductRepository::class)]
-#[ORM\Table(options: ['comment' => 'Товары в заказе'])]
-class OrderProduct
+class OrderProduct implements ProductInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue('IDENTITY')]
@@ -61,7 +61,7 @@ class OrderProduct
      *
      * @return integer
      */
-    public function getQuantity(): ?int
+    public function getQuantity(): int
     {
         return $this->quantity;
     }

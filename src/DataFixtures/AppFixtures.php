@@ -6,6 +6,7 @@ use App\Component\Utils\Aliases;
 use App\Component\Utils\Utils;
 use App\Entity\Image;
 use App\Entity\OrderStatus;
+use App\Entity\PaymentType;
 use App\Entity\Product;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -28,6 +29,16 @@ class AppFixtures extends Fixture
                 ->setCode($status['code']);
 
             $manager->persist($orderStatusEntity);
+        }
+
+        foreach (Aliases::PAYMENT_TYPE as $type) {
+            $paymentType = new PaymentType();
+            $paymentType
+                ->setValue($type['value'])
+                ->setDescription($type['description'])
+                ->setCode($type['code']);
+
+            $manager->persist($paymentType);
         }
 
         $products = Utils::convertCsvToArray($this->workingDir . self::SVG_FILE_PATH);

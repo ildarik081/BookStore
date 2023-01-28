@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,10 +14,6 @@ use Doctrine\ORM\Mapping as ORM;
  * Заказ
  */
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
-#[ORM\Table(
-    name: '`order`',
-    options: ['comment' => 'Заказы']
-)]
 #[ORM\HasLifecycleCallbacks]
 class Order
 {
@@ -57,7 +54,7 @@ class Order
         ORM\Column(
             type: Types::DATETIME_MUTABLE,
             nullable: false,
-            options: ['comment' => 'Дата создания заказа']
+            options: ['comment' => 'Дата/время создания заказа']
         )
     ]
     private ?DateTimeInterface $dtCreate = null;
@@ -85,10 +82,14 @@ class Order
     #[ORM\JoinColumn(nullable: false)]
     private ?Recipient $recipient = null;
 
+    #[ORM\OneToMany(mappedBy: 'order', targetEntity: Transaction::class)]
+    private Collection $transaction;
+
     public function __construct()
     {
         $this->historyOrderStatus = new ArrayCollection();
         $this->orderProduct = new ArrayCollection();
+        $this->transaction = new ArrayCollection();
     }
 
     /**
@@ -160,13 +161,12 @@ class Order
     /**
      * Записать дату создания заказа
      *
-     * @param DateTimeInterface $dtCreate
      * @return self
      */
     #[ORM\PrePersist]
-    public function setDtCreate(DateTimeInterface $dtCreate): self
+    public function setDtCreate(): self
     {
-        $this->dtCreate = $dtCreate;
+        $this->dtCreate = new DateTime();
 
         return $this;
     }
@@ -174,7 +174,7 @@ class Order
     /**
      * Получить историю статусов заказа
      *
-     * @return Collection
+     * @return Collection<int, HistoryOrderStatus>
      */
     public function getHistoryOrderStatus(): Collection
     {
@@ -217,7 +217,7 @@ class Order
     /**
      * Получить товары заказа
      *
-     * @return Collection
+     * @return Collection<int, OrderProduct>
      */
     public function getOrderProduct(): Collection
     {
@@ -276,6 +276,35 @@ class Order
     public function setRecipient(?Recipient $recipient): self
     {
         $this->recipient = $recipient;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getTransaction(): Collection
+    {
+        return $this->transaction;
+    }
+
+    public function addTransaction(Transaction $transaction): self
+    {
+        if (!$this->transaction->contains($transaction)) {
+            $this->transaction->add($transaction);
+            $transaction->setOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): self
+    {
+        if ($this->transaction->removeElement($transaction)) {
+            if ($transaction->getOrder() === $this) {
+                $transaction->setOrder(null);
+            }
+        }
 
         return $this;
     }

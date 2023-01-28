@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
  * История статусов заказа
  */
 #[ORM\Entity(repositoryClass: HistoryOrderStatusRepository::class)]
-#[ORM\Table(options: ['comment' => 'История статусов заказа'])]
 class HistoryOrderStatus
 {
     #[ORM\Id]

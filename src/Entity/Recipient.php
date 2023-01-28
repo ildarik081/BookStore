@@ -9,10 +9,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Получатели
+ * Получатель
  */
 #[ORM\Entity(repositoryClass: RecipientRepository::class)]
-#[ORM\Table(options: ['comment' => 'Получатели'])]
 class Recipient
 {
     #[ORM\Id]
@@ -45,16 +44,6 @@ class Recipient
         )
     ]
     private ?string $email = null;
-
-    #[
-        ORM\Column(
-            type: Types::STRING,
-            nullable: false,
-            length: 40,
-            options: ['comment' => 'Идентификатор сессии']
-        )
-    ]
-    private ?string $sessionId = null;
 
     #[
         ORM\OneToMany(
@@ -122,29 +111,6 @@ class Recipient
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * Получить идентификатор сессии
-     *
-     * @return string|null
-     */
-    public function getSessionId(): ?string
-    {
-        return $this->sessionId;
-    }
-
-    /**
-     * Записать идентификатор сессии
-     *
-     * @param string $sessionId
-     * @return self
-     */
-    public function setSessionId(string $sessionId): self
-    {
-        $this->sessionId = $sessionId;
 
         return $this;
     }

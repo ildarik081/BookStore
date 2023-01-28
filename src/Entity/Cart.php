@@ -14,7 +14,6 @@ use Doctrine\ORM\Mapping as ORM;
  * Корзина
  */
 #[ORM\Entity(repositoryClass: CartRepository::class)]
-#[ORM\Table(options: ['comment' => 'Корзины пользователей'])]
 #[ORM\HasLifecycleCallbacks]
 class Cart
 {
@@ -153,7 +152,7 @@ class Cart
     /**
      * Получить массив товаров в корзине
      *
-     * @return Collection
+     * @return Collection<int, CartProduct>
      */
     public function getCartProducts(): Collection
     {

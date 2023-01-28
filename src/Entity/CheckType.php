@@ -2,19 +2,20 @@
 
 namespace App\Entity;
 
-use App\Repository\OrderStatusRepository;
+use App\Repository\CheckTypeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Статус заказа
+ * Тип чека
  *
- * - new - _новый заказ_
- * - inWork - _в работе_
- * - completed - _завершен_
+ * - advance - _авансовый чек_
+ * - refundAdvance - _возврат аванса_
+ * - fullSettlement - _чек полного расчета_
+ * - refundFullSettlement - _возврат полного расчета_
  */
-#[ORM\Entity(repositoryClass: OrderStatusRepository::class)]
-class OrderStatus
+#[ORM\Entity(repositoryClass: CheckTypeRepository::class)]
+class CheckType
 {
     #[ORM\Id]
     #[ORM\GeneratedValue('IDENTITY')]
@@ -22,7 +23,7 @@ class OrderStatus
         ORM\Column(
             type: Types::INTEGER,
             nullable: false,
-            options: ['comment' => 'Идентификатор статуса заказа']
+            options: ['comment' => 'Идентификатор типа чека']
         )
     ]
     private ?int $id = null;
@@ -52,13 +53,13 @@ class OrderStatus
             type: Types::STRING,
             length: 10,
             nullable: false,
-            options: ['comment' => 'Код статуса']
+            options: ['comment' => 'Код типа чека']
         )
     ]
     private ?string $code = null;
 
     /**
-     * Получить идентификатор статуса
+     * Получить идентификатор типа чека
      *
      * @return integer|null
      */
@@ -68,7 +69,7 @@ class OrderStatus
     }
 
     /**
-     * Получить значение статуса
+     * Получить значение типа чека
      *
      * @return string|null
      */
@@ -78,7 +79,7 @@ class OrderStatus
     }
 
     /**
-     * Записать значение статуса
+     * Записать значение типа чека
      *
      * @param string $value
      * @return self
@@ -91,7 +92,7 @@ class OrderStatus
     }
 
     /**
-     * Получить описание статуса
+     * Получить описание типа чека
      *
      * @return string|null
      */
@@ -101,7 +102,7 @@ class OrderStatus
     }
 
     /**
-     * Записать описание статуса
+     * Записать описание типа чека
      *
      * @param string|null $description
      * @return self
@@ -114,7 +115,7 @@ class OrderStatus
     }
 
     /**
-     * Получить код статуса
+     * Получить код типа чека
      *
      * @return string|null
      */
@@ -124,7 +125,7 @@ class OrderStatus
     }
 
     /**
-     * Записать код статуса
+     * Записать код типа чека
      *
      * @param string $code
      * @return self

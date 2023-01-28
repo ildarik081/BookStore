@@ -10,7 +10,9 @@ use App\Dto\ControllerRequest\ListRequest;
 use App\Dto\ControllerRequest\ProductRequest;
 use App\Dto\ControllerResponse\ProductListResponse;
 use App\Dto\ControllerResponse\SuccessResponse;
+use App\Dto\Image as DtoImage;
 use App\Dto\Product;
+use App\Entity\Image;
 use App\Entity\Product as EntityProduct;
 use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
@@ -67,8 +69,7 @@ class ProductService
             ->setUrl($request->url)
             ->setDescription($request->description)
             ->setAuthor($request->author)
-            ->setImage($request->image)
-            ->setImageRepository($this->imageRepository)
+            ->setImage($this->getImages($request->image))
             ->build()
             ->getResult();
 
@@ -97,8 +98,7 @@ class ProductService
             ->setUrl($request->url)
             ->setDescription($request->description)
             ->setAuthor($request->author)
-            ->setImage($request->image)
-            ->setImageRepository($this->imageRepository)
+            ->setImage($this->getImages($request->image))
             ->build()
             ->getResult();
 
@@ -166,5 +166,22 @@ class ProductService
         }
 
         return $product;
+    }
+
+    /**
+     * Получить массив изображений
+     *
+     * @param DtoImage[] $images
+     * @return Image[]
+     */
+    private function getImages(array $images): array
+    {
+        $ids = [];
+
+        foreach ($images as $image) {
+            $ids[] = $image->id;
+        }
+
+        return $this->imageRepository->getImagesByIds($ids);
     }
 }

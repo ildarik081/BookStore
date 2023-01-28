@@ -5,6 +5,7 @@ namespace App\Component\Builder;
 use App\Component\Exception\BuilderException;
 use App\Component\Factory\SimpleResponseFactory;
 use App\Component\Utils\Aliases;
+use App\Component\Utils\ProductUtils;
 use App\Dto\CartProduct;
 use App\Dto\ControllerResponse\CartResponse;
 use App\Entity\Cart;
@@ -15,7 +16,6 @@ class CartResponseBuilder implements BuilderInterface
 {
     private ?Cart $cart = null;
     private ?CartResponse $result = null;
-    private ?float $totalPrice = null;
 
     /**
      * Собрать CartResponse
@@ -41,8 +41,8 @@ class CartResponseBuilder implements BuilderInterface
             ? ''
             : ($this->cart->getDtUpdate())->format(Aliases::DT_FORMAT);
         $this->result->products = $this->createCartProductDto();
-        $this->result->totalQuantity = $this->getTotalQuantity();
-        $this->result->totalPrice = $this->totalPrice ?? 0;
+        $this->result->totalQuantity = ProductUtils::calculationTotalQuantity($this->cart->getCartProducts());
+        $this->result->totalPrice = ProductUtils::calculationTotalPrice($this->cart->getCartProducts());
 
         return $this;
     }
@@ -56,7 +56,6 @@ class CartResponseBuilder implements BuilderInterface
     {
         $this->cart = null;
         $this->result = null;
-        $this->totalPrice = null;
 
         return $this;
     }
@@ -97,17 +96,6 @@ class CartResponseBuilder implements BuilderInterface
         return $this;
     }
 
-    private function getTotalQuantity(): int
-    {
-        $quantity = 0;
-
-        foreach ($this->cart->getCartProducts() as $product) {
-            $quantity += $product->getQuantity();
-        }
-
-        return $quantity;
-    }
-
     /**
      * Собрать DTO CartProduct
      *
@@ -118,8 +106,6 @@ class CartResponseBuilder implements BuilderInterface
         $result = [];
 
         foreach ($this->cart->getCartProducts() as $cartProduct) {
-            $this->totalPrice += $cartProduct->getProduct()->getPrice() * $cartProduct->getQuantity();
-
             $cartProductDto = new CartProduct();
             $cartProductDto->quantity = $cartProduct->getQuantity();
             $cartProductDto->id = $cartProduct->getProduct()?->getId();
