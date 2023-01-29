@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230128092052 extends AbstractMigration
+final class Version20230128175606 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -38,7 +38,7 @@ final class Version20230128092052 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN cart_product.product_id IS \'Идентификатор товара\'');
         $this->addSql('COMMENT ON COLUMN cart_product.cart_id IS \'Идентификатор корзины\'');
         $this->addSql('COMMENT ON COLUMN cart_product.quantity IS \'Количество товаров\'');
-        $this->addSql('CREATE TABLE check_type (id SERIAL NOT NULL, value VARCHAR(30) NOT NULL, description VARCHAR(255) DEFAULT NULL, code VARCHAR(10) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE check_type (id SERIAL NOT NULL, value VARCHAR(30) NOT NULL, description VARCHAR(255) DEFAULT NULL, code VARCHAR(20) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN check_type.id IS \'Идентификатор типа чека\'');
         $this->addSql('COMMENT ON COLUMN check_type.value IS \'Значение\'');
         $this->addSql('COMMENT ON COLUMN check_type.description IS \'Описание\'');
@@ -56,12 +56,13 @@ final class Version20230128092052 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN image.file_name IS \'Наименование файла изображения\'');
         $this->addSql('COMMENT ON COLUMN image.path IS \'Путь до изображения\'');
         $this->addSql('COMMENT ON COLUMN image.description IS \'Описание\'');
-        $this->addSql('CREATE TABLE "order" (id SERIAL NOT NULL, recipient_id INT NOT NULL, session_id VARCHAR(40) NOT NULL, total_price DOUBLE PRECISION DEFAULT \'0\' NOT NULL, dt_create TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX IDX_F5299398E92F8F78 ON "order" (recipient_id)');
+        $this->addSql('CREATE TABLE "order" (id SERIAL NOT NULL, recipient_id INT NOT NULL, session_id VARCHAR(40) NOT NULL, total_price DOUBLE PRECISION DEFAULT \'0\' NOT NULL, payment_type_code VARCHAR(10) NOT NULL, dt_create TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_F5299398E92F8F78 ON "order" (recipient_id)');
         $this->addSql('COMMENT ON COLUMN "order".id IS \'Идентификатор заказа\'');
         $this->addSql('COMMENT ON COLUMN "order".recipient_id IS \'Идентификатор получателя\'');
         $this->addSql('COMMENT ON COLUMN "order".session_id IS \'Идентификатор сессии\'');
         $this->addSql('COMMENT ON COLUMN "order".total_price IS \'Итоговая стоимость заказа\'');
+        $this->addSql('COMMENT ON COLUMN "order".payment_type_code IS \'Код типа оплаты\'');
         $this->addSql('COMMENT ON COLUMN "order".dt_create IS \'Дата/время создания заказа\'');
         $this->addSql('CREATE TABLE order_product (id SERIAL NOT NULL, product_id INT DEFAULT NULL, order_id INT NOT NULL, quantity INT DEFAULT 0 NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_2530ADE64584665A ON order_product (product_id)');
@@ -70,7 +71,7 @@ final class Version20230128092052 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN order_product.product_id IS \'Идентификатор товара\'');
         $this->addSql('COMMENT ON COLUMN order_product.order_id IS \'Идентификатор заказа\'');
         $this->addSql('COMMENT ON COLUMN order_product.quantity IS \'Количество товаров\'');
-        $this->addSql('CREATE TABLE order_status (id SERIAL NOT NULL, value VARCHAR(30) NOT NULL, description VARCHAR(255) DEFAULT NULL, code VARCHAR(10) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE order_status (id SERIAL NOT NULL, value VARCHAR(30) NOT NULL, description VARCHAR(255) DEFAULT NULL, code VARCHAR(20) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN order_status.id IS \'Идентификатор статуса заказа\'');
         $this->addSql('COMMENT ON COLUMN order_status.value IS \'Значение\'');
         $this->addSql('COMMENT ON COLUMN order_status.description IS \'Описание\'');
@@ -92,7 +93,7 @@ final class Version20230128092052 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN payment_check.is_error IS \'true — ошибка фискализации чека\'');
         $this->addSql('COMMENT ON COLUMN payment_check.error_message IS \'Текст ошибки фискализации\'');
         $this->addSql('COMMENT ON COLUMN payment_check.dt_create IS \'Дата/время создания чека\'');
-        $this->addSql('CREATE TABLE payment_type (id SERIAL NOT NULL, value VARCHAR(30) NOT NULL, description VARCHAR(255) DEFAULT NULL, code VARCHAR(10) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE payment_type (id SERIAL NOT NULL, value VARCHAR(30) NOT NULL, description VARCHAR(255) DEFAULT NULL, code VARCHAR(20) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN payment_type.id IS \'Идентификатор типа оплаты\'');
         $this->addSql('COMMENT ON COLUMN payment_type.value IS \'Значение\'');
         $this->addSql('COMMENT ON COLUMN payment_type.description IS \'Описание\'');
@@ -108,7 +109,7 @@ final class Version20230128092052 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN recipient.id IS \'Идентификатор получателя\'');
         $this->addSql('COMMENT ON COLUMN recipient.first_name IS \'Имя получателя\'');
         $this->addSql('COMMENT ON COLUMN recipient.email IS \'Email получателя\'');
-        $this->addSql('CREATE TABLE transaction (id SERIAL NOT NULL, order_id INT NOT NULL, payment_id INT DEFAULT NULL, uuid UUID NOT NULL, sum DOUBLE PRECISION NOT NULL, is_active BOOLEAN DEFAULT true NOT NULL, payment_link VARCHAR(255) DEFAULT NULL, external_id VARCHAR(80) DEFAULT NULL, payment_type_code VARCHAR(10) NOT NULL, dt_create TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE transaction (id SERIAL NOT NULL, order_id INT NOT NULL, payment_id INT DEFAULT NULL, uuid UUID NOT NULL, sum DOUBLE PRECISION NOT NULL, is_active BOOLEAN DEFAULT true NOT NULL, payment_link VARCHAR(255) DEFAULT NULL, external_id VARCHAR(80) DEFAULT NULL, dt_create TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_723705D18D9F6D38 ON transaction (order_id)');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_723705D14C3A3BB ON transaction (payment_id)');
         $this->addSql('COMMENT ON COLUMN transaction.id IS \'Идентификатор транзакции\'');
@@ -119,7 +120,6 @@ final class Version20230128092052 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN transaction.is_active IS \'true — активная транзакция (оплата не подтверждена)\'');
         $this->addSql('COMMENT ON COLUMN transaction.payment_link IS \'Ссылка для оплаты\'');
         $this->addSql('COMMENT ON COLUMN transaction.external_id IS \'Внешний идентификатор мерчанта\'');
-        $this->addSql('COMMENT ON COLUMN transaction.payment_type_code IS \'Код типа оплаты\'');
         $this->addSql('COMMENT ON COLUMN transaction.dt_create IS \'Дата/время создания транзакции\'');
         $this->addSql('ALTER TABLE acquiring_settings ADD CONSTRAINT FK_5AE547DADC058279 FOREIGN KEY (payment_type_id) REFERENCES payment_type (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE cart_product ADD CONSTRAINT FK_2890CCAA4584665A FOREIGN KEY (product_id) REFERENCES product (id) NOT DEFERRABLE INITIALLY IMMEDIATE');

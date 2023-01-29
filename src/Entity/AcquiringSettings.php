@@ -105,7 +105,7 @@ class AcquiringSettings
     /**
      * Записать пароль для авторизации у мерчанта
      *
-     * @param string $login
+     * @param string $password
      * @return self
      */
     public function setPassword(string $password): self

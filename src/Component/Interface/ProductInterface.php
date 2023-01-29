@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Component\Interfaces;
+namespace App\Component\Interface;
 
 use App\Entity\Product;
 

@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Component\Exception\RepositoryException;
 use App\Entity\CheckType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 /**
  * @extends ServiceEntityRepository<CheckType>
@@ -39,28 +42,26 @@ class CheckTypeRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return CheckType[] Returns an array of CheckType objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Получить тип чека по коду
+     *
+     * @param string $code
+     * @return CheckType
+     * @throws RepositoryException
+     */
+    public function getCheckTypeByCode(string $code): CheckType
+    {
+        $checkType = $this->findOneBy(['code' => $code]);
 
-//    public function findOneBySomeField($value): ?CheckType
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if (null === $checkType) {
+            throw new RepositoryException(
+                message: 'Не найден тип чека с кодом: ' . $code,
+                code: ResponseAlias::HTTP_BAD_REQUEST,
+                responseCode: 'CHECK_TYPE_NOT_FOUND',
+                logLevel: LogLevel::CRITICAL
+            );
+        }
+
+        return $checkType;
+    }
 }

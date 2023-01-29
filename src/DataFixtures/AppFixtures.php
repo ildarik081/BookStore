@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Component\Utils\Aliases;
 use App\Component\Utils\Utils;
+use App\Entity\CheckType;
 use App\Entity\Image;
 use App\Entity\OrderStatus;
 use App\Entity\PaymentType;
@@ -31,14 +32,24 @@ class AppFixtures extends Fixture
             $manager->persist($orderStatusEntity);
         }
 
-        foreach (Aliases::PAYMENT_TYPE as $type) {
-            $paymentType = new PaymentType();
-            $paymentType
-                ->setValue($type['value'])
-                ->setDescription($type['description'])
-                ->setCode($type['code']);
+        foreach (Aliases::PAYMENT_TYPE as $paymentType) {
+            $paymentTypeEntity = new PaymentType();
+            $paymentTypeEntity
+                ->setValue($paymentType['value'])
+                ->setDescription($paymentType['description'])
+                ->setCode($paymentType['code']);
 
-            $manager->persist($paymentType);
+            $manager->persist($paymentTypeEntity);
+        }
+
+        foreach (Aliases::CHECK_TYPE as $checkType) {
+            $checkTypeEntity = new CheckType();
+            $checkTypeEntity
+                ->setValue($checkType['value'])
+                ->setDescription($checkType['description'])
+                ->setCode($checkType['code']);
+
+            $manager->persist($checkTypeEntity);
         }
 
         $products = Utils::convertCsvToArray($this->workingDir . self::SVG_FILE_PATH);

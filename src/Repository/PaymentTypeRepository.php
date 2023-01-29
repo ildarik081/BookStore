@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Component\Exception\RepositoryException;
 use App\Entity\PaymentType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 /**
  * @extends ServiceEntityRepository<PaymentType>
@@ -37,5 +40,28 @@ class PaymentTypeRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * Получить тип оплаты по коду
+     *
+     * @param string|null $code
+     * @return PaymentType
+     * @throws RepositoryException
+     */
+    public function getPaymentTypeByCode(?string $code): PaymentType
+    {
+        $paymentType = $this->findOneBy(['code' => $code]);
+
+        if (null === $paymentType) {
+            throw new RepositoryException(
+                message: 'Не найден тип оплаты с кодом: ' . $code,
+                code: ResponseAlias::HTTP_BAD_REQUEST,
+                responseCode: 'PAYMENT_TYPE_NOT_FOUND',
+                logLevel: LogLevel::CRITICAL
+            );
+        }
+
+        return $paymentType;
     }
 }

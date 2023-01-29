@@ -135,6 +135,8 @@ class PaymentCheck
     /**
      * Изменить признак фискализации
      *
+     * **true** - чек требует фискализации
+     *
      * @param boolean $isActive
      * @return self
      */

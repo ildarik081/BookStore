@@ -2,21 +2,18 @@
 
 namespace App\Component\Utils;
 
-use App\Component\Exception\UtilsException;
-use App\Component\Interfaces\ProductInterface;
+use App\Component\Interface\ProductInterface;
 use Doctrine\Common\Collections\Collection;
-use Psr\Log\LogLevel;
-use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class ProductUtils
 {
     /**
      * Посчитать общую стоимость товаров
      *
-     * @param ProductInterface[] $products
+     * @param ProductInterface[]|array $products
      * @return float
      */
-    public static function calculationTotalPrice(Collection $products): float
+    public static function calculationTotalPrice(Collection|array $products): float
     {
         $totalPrice = 0.0;
 

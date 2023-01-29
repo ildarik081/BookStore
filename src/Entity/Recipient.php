@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\RecipientRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -44,20 +42,6 @@ class Recipient
         )
     ]
     private ?string $email = null;
-
-    #[
-        ORM\OneToMany(
-            mappedBy: 'recipient',
-            targetEntity: Order::class,
-            cascade: ['persist', 'remove']
-        )
-    ]
-    private Collection $orders;
-
-    public function __construct()
-    {
-        $this->orders = new ArrayCollection();
-    }
 
     /**
      * Получить идентификатор получателя
@@ -111,49 +95,6 @@ class Recipient
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * Получить все заказы получателя
-     *
-     * @return Collection<int, Order>
-     */
-    public function getOrders(): Collection
-    {
-        return $this->orders;
-    }
-
-    /**
-     * Добавить заказ получателю
-     *
-     * @param Order $order
-     * @return self
-     */
-    public function addOrder(Order $order): self
-    {
-        if (!$this->orders->contains($order)) {
-            $this->orders->add($order);
-            $order->setRecipient($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Удалить заказ получателя
-     *
-     * @param Order $order
-     * @return self
-     */
-    public function removeOrder(Order $order): self
-    {
-        if ($this->orders->removeElement($order)) {
-            if ($order->getRecipient() === $this) {
-                $order->setRecipient(null);
-            }
-        }
 
         return $this;
     }

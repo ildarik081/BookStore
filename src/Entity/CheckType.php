@@ -51,7 +51,7 @@ class CheckType
     #[
         ORM\Column(
             type: Types::STRING,
-            length: 10,
+            length: 20,
             nullable: false,
             options: ['comment' => 'Код типа чека']
         )

@@ -2,21 +2,22 @@
 
 namespace App\Service;
 
+use App\Component\Builder\OrderBuilder;
+use App\Component\Factory\EntityFactory;
 use App\Component\Factory\SimpleResponseFactory;
-use App\Component\Utils\Aliases;
-use App\Component\Utils\ProductUtils;
+use App\Component\Message\SendTransactionMessage;
+use App\Component\Utils\Enum\OrderStatusEnum;
 use App\Dto\ControllerRequest\CheckoutRequest;
+use App\Dto\ControllerResponse\AcquiringResponse;
 use App\Dto\ControllerResponse\SuccessResponse;
-use App\Entity\HistoryOrderStatus;
 use App\Entity\Order;
-use App\Entity\OrderProduct;
-use App\Entity\Recipient;
 use App\Repository\CartRepository;
+use App\Repository\HistoryOrderStatusRepository;
 use App\Repository\OrderProductRepository;
 use App\Repository\OrderRepository;
 use App\Repository\OrderStatusRepository;
-use Psr\Log\LogLevel;
-use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+use App\Repository\TransactionRepository;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class OrderService
 {
@@ -24,55 +25,51 @@ class OrderService
         private readonly OrderRepository $orderRepository,
         private readonly OrderStatusRepository $orderStatusRepository,
         private readonly OrderProductRepository $orderProductRepository,
-        private readonly CartRepository $cartRepository
+        private readonly CartRepository $cartRepository,
+        private readonly HistoryOrderStatusRepository $historyOrderStatusRepository,
+        private readonly TransactionRepository $transactionRepository,
+        private readonly OrderBuilder $orderBuilder,
+        private readonly MessageBusInterface $bus
     ) {
     }
 
     public function checkout(CheckoutRequest $request): SuccessResponse
     {
         $cart = $this->cartRepository->getCartBySessionId($request->session, true);
-
-        $recipient = new Recipient();
-        $recipient
-            ->setFirstName($request->firstName)
-            ->setEmail($request->email)
+        $order = $this->orderBuilder
+            ->setCheckoutRequest($request)
+            ->setCart($cart)
+            ->build()
+            ->getResult()
         ;
 
-        $order = new Order();
-        $order
-            ->setSessionId($cart->getSessionId())
-            ->setTotalPrice(ProductUtils::calculationTotalPrice($cart->getCartProducts()))
-            ->setRecipient($recipient)
-        ;
-
-        $orderStatus = $this->orderStatusRepository->getOrderStatusByCode(Aliases::ORDER_STATUSES['new']['code']);
-
-        $historyOrderStatus = new HistoryOrderStatus();
-        $historyOrderStatus
-            ->setStatus($orderStatus)
-            ->setOrder($order)
-        ;
-
-        $this->orderRepository->save($order, true);
+        $orderStatus = $this->orderStatusRepository->getOrderStatusByCode(OrderStatusEnum::New->value);
+        $historyOrderStatus = EntityFactory::createHistoryOrderStatus($orderStatus);
+        $order->addHistoryOrderStatus($historyOrderStatus);
 
         foreach ($cart->getCartProducts() as $cartProduct) {
-            $orderProduct = new OrderProduct();
-            $orderProduct
-                ->setProduct($cartProduct->getProduct())
-                ->setOrder($order)
-                ->setQuantity($cartProduct->getQuantity())
-            ;
-
-            $this->orderProductRepository->save($orderProduct);
+            $orderProduct = EntityFactory::createOrderProduct($cartProduct->getProduct(),$cartProduct->getQuantity());
+            $order->addOrderProduct($orderProduct);
         }
 
-        $this->orderProductRepository->save($orderProduct, true);
-
-        //! Удалить Payment и создать транзакции которые порождают оплаты
-        //! Будет создаваться фиктивная транзакция, которая будет класться в очередь и переводиться в статус оплаченной
-        //! После этого будет создаваться оплата и отправляться сообщение на почту через очередь
-
+        $this->orderRepository->save($order, true);
+        // $this->cartRepository->remove($cart, true);
 
         return SimpleResponseFactory::createSuccessResponse(true);
-    }   
+    }
+
+    public function createTransaction(Order $order): AcquiringResponse
+    {
+        //todo Тут можно прикрутить эквайринг
+        //todo Пока создается фиктивная транзакция, которая порождает успешную оплату через сообщение в rabbit
+
+        $paymentLink = 'http://localhost/api/doc';
+        $transaction = EntityFactory::createTransaction($order);
+        $transaction->setPaymentLink($paymentLink);
+        $this->transactionRepository->save($transaction, true);
+
+        $this->bus->dispatch(new SendTransactionMessage($transaction->getId()));
+
+        return SimpleResponseFactory::createAcquiringResponse($paymentLink);
+    }
 }

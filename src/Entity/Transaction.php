@@ -78,16 +78,6 @@ class Transaction
 
     #[
         ORM\Column(
-            type: Types::STRING,
-            nullable: false,
-            length: 10,
-            options: ['comment' => 'Код типа оплаты']
-        )
-    ]
-    private ?string $paymentTypeCode = null;
-
-    #[
-        ORM\Column(
             type: Types::DATETIME_MUTABLE,
             nullable: false,
             options: ['comment' => 'Дата/время создания транзакции']
@@ -179,6 +169,8 @@ class Transaction
 
     /**
      * Изменить признак активности транзакции
+     *
+     * **true** - оплата не подтверждена
      *
      * @param boolean $isActive
      * @return self
@@ -278,29 +270,6 @@ class Transaction
     public function setOrder(?Order $order): self
     {
         $this->order = $order;
-
-        return $this;
-    }
-
-    /**
-     * Получить код типа оплаты
-     *
-     * @return string|null
-     */
-    public function getPaymentTypeCode(): ?string
-    {
-        return $this->paymentTypeCode;
-    }
-
-    /**
-     * Записать код типа оплаты
-     *
-     * @param string $paymentTypeCode
-     * @return self
-     */
-    public function setPaymentTypeCode(string $paymentTypeCode): self
-    {
-        $this->paymentTypeCode = $paymentTypeCode;
 
         return $this;
     }

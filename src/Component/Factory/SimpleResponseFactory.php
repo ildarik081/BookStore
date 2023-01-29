@@ -2,6 +2,7 @@
 
 namespace App\Component\Factory;
 
+use App\Dto\ControllerResponse\AcquiringResponse;
 use App\Dto\ControllerResponse\ImageListResponse;
 use App\Dto\ControllerResponse\ProductListResponse;
 use App\Dto\ControllerResponse\SuccessResponse;
@@ -91,6 +92,18 @@ class SimpleResponseFactory
         $imageDto->description = $image->getDescription();
 
         return $imageDto;
+    }
+
+    /**
+     * @param string $paymentLink
+     * @return AcquiringResponse
+     */
+    public static function createAcquiringResponse(string $paymentLink): AcquiringResponse
+    {
+        $response = new AcquiringResponse();
+        $response->paymentLink = $paymentLink;
+
+        return $response;
     }
 
     /**

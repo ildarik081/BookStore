@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Component\Interfaces\ProductInterface;
+use App\Component\Interface\ProductInterface;
 use App\Repository\CartProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;

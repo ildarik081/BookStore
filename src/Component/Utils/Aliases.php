@@ -55,4 +55,27 @@ class Aliases
             'code' => 'sbp'
         ]
     ];
+
+    public const CHECK_TYPE = [
+        'advance' => [
+            'value' => 'Авансовый чек',
+            'description' => 'Авансовый чек',
+            'code' => 'advance'
+        ],
+        'refundAdvance' => [
+            'value' => 'Возврат аванса',
+            'description' => 'Возврат аванса',
+            'code' => 'refundAdvance'
+        ],
+        'fullSettlement' => [
+            'value' => 'Чек полного расчета',
+            'description' => 'Чек полного расчета',
+            'code' => 'fullSettlement'
+        ],
+        'refundFullSettlement' => [
+            'value' => 'Возврат полного расчета',
+            'description' => 'Возврат полного расчета',
+            'code' => 'refundFullSettlement'
+        ]
+    ];
 }
