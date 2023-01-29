@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230128175606 extends AbstractMigration
+final class Version20230129170156 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -43,12 +43,13 @@ final class Version20230128175606 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN check_type.value IS \'Значение\'');
         $this->addSql('COMMENT ON COLUMN check_type.description IS \'Описание\'');
         $this->addSql('COMMENT ON COLUMN check_type.code IS \'Код типа чека\'');
-        $this->addSql('CREATE TABLE history_order_status (id SERIAL NOT NULL, status_id INT NOT NULL, order_id INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE history_order_status (id SERIAL NOT NULL, status_id INT NOT NULL, order_id INT NOT NULL, dt_create TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_8C7F86326BF700BD ON history_order_status (status_id)');
         $this->addSql('CREATE INDEX IDX_8C7F86328D9F6D38 ON history_order_status (order_id)');
         $this->addSql('COMMENT ON COLUMN history_order_status.id IS \'Идентификатор в истории статуса заказа\'');
         $this->addSql('COMMENT ON COLUMN history_order_status.status_id IS \'Идентификатор статуса заказа\'');
         $this->addSql('COMMENT ON COLUMN history_order_status.order_id IS \'Идентификатор заказа\'');
+        $this->addSql('COMMENT ON COLUMN history_order_status.dt_create IS \'Дата/время изменения статуса заказа\'');
         $this->addSql('CREATE TABLE image (id SERIAL NOT NULL, product_id INT DEFAULT NULL, file_name VARCHAR(255) NOT NULL, path VARCHAR(255) NOT NULL, description VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_C53D045F4584665A ON image (product_id)');
         $this->addSql('COMMENT ON COLUMN image.id IS \'Идентификатор изображения\'');

@@ -2,13 +2,14 @@
 
 namespace App\EventSubscriber;
 
+use App\Component\Mailer\OrderStatusMailer;
 use App\Component\Utils\Postman;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
 
 class TerminateSubscriber implements EventSubscriberInterface
 {
-    public function __construct()
+    public function __construct(private readonly OrderStatusMailer $orderStatusMailer)
     {
     }
 
@@ -21,7 +22,7 @@ class TerminateSubscriber implements EventSubscriberInterface
         $historyOrderStatus = Postman::getInstance()->getHistoryOrderStatus();
 
         if (null !== $historyOrderStatus) {
-            //todo отправлять шаблон в соответствии со статусом заказа
+            $this->orderStatusMailer->sendNotify($historyOrderStatus);
         }
     }
 

@@ -10,6 +10,9 @@ class Aliases
     public const METHOD_PUT = 'PUT';
     public const METHOD_DELETE = 'DELETE';
 
+    public const STORE_NAME = 'Книжная лавка';
+    public const SITE_URL = 'http://localhost/';
+
     /** Формат даты */
     public const D_FORMAT = 'd.m.Y';
 

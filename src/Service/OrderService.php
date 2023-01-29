@@ -57,6 +57,8 @@ class OrderService
         $this->cartRepository->remove($cart, true);
         Postman::getInstance()->dispatchHistoryOrderStatus($historyOrderStatus);
 
+        //todo отправлять уведомления об изменении статуса заказа по событию добавления новой записи в HistoryOrderStatus
+
         return SimpleResponseFactory::createSuccessResponse(true);
     }
 

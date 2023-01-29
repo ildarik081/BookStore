@@ -8,10 +8,10 @@ framework:
 
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
-            send_transaction: '%env(MESSENGER_TRANSPORT_DSN)%'
-            # failed: 'doctrine://default?queue_name=failed'
+            send_messenger: '%env(MESSENGER_TRANSPORT_DSN)%'
             # sync: 'sync://'
 
         routing:
             # Route your messages to the transports
-            'App\Component\Message\SendTransactionMessage': send_transaction
+            'App\Component\Message\SendTransactionMessage': send_messenger
+            'App\Component\Message\SendCompletedOrderMessage': send_messenger
