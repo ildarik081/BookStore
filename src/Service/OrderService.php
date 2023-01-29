@@ -7,6 +7,7 @@ use App\Component\Factory\EntityFactory;
 use App\Component\Factory\SimpleResponseFactory;
 use App\Component\Message\SendTransactionMessage;
 use App\Component\Utils\Enum\OrderStatusEnum;
+use App\Component\Utils\Postman;
 use App\Dto\ControllerRequest\CheckoutRequest;
 use App\Dto\ControllerResponse\AcquiringResponse;
 use App\Dto\ControllerResponse\SuccessResponse;
@@ -53,7 +54,8 @@ class OrderService
         }
 
         $this->orderRepository->save($order, true);
-        // $this->cartRepository->remove($cart, true);
+        $this->cartRepository->remove($cart, true);
+        Postman::getInstance()->dispatchHistoryOrderStatus($historyOrderStatus);
 
         return SimpleResponseFactory::createSuccessResponse(true);
     }

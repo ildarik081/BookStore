@@ -3,6 +3,7 @@
 *.log
 *.local
 *.pem
+/.env.local
 /var/
 /vendor/
 /.phpcs-cache
