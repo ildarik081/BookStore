@@ -2,6 +2,7 @@
 
 namespace App\Component\Mailer;
 
+use App\Component\Exception\MailerException;
 use App\Component\Utils\Aliases;
 use App\Component\Utils\Enum\OrderStatusEnum;
 use App\Entity\HistoryOrderStatus;
@@ -11,9 +12,19 @@ use DateTime;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Twig\Environment;
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class OrderStatusMailer
 {
+    private const PATH_TEMPLATE_NEW = '/Email/OrderStatus/new.html.twig';
+    private const PATH_TEMPLATE_IN_WORK = '/Email/OrderStatus/inWork.html.twig';
+    private const PATH_TEMPLATE_COMPLETED = '/Email/OrderStatus/completed.html.twig';
+
     public function __construct(
         private readonly Environment $twig,
         private readonly MailerInterface $mailer,
@@ -23,11 +34,21 @@ class OrderStatusMailer
 
     public function sendNotify(HistoryOrderStatus $historyOrderStatus): void
     {
-        match ($historyOrderStatus->getStatus()->getCode()) {
-            OrderStatusEnum::New->value => $this->sendNew($historyOrderStatus),
-            OrderStatusEnum::InWork->value => $this->sendInWork($historyOrderStatus),
-            OrderStatusEnum::Completed->value => $this->sendCompleted($historyOrderStatus)
-        };
+        try {
+            match ($historyOrderStatus->getStatus()->getCode()) {
+                OrderStatusEnum::New->value => $this->sendNew($historyOrderStatus),
+                OrderStatusEnum::InWork->value => $this->sendInWork($historyOrderStatus),
+                OrderStatusEnum::Completed->value => $this->sendCompleted($historyOrderStatus)
+            };
+        } catch (TransportExceptionInterface | LoaderError | RuntimeError | RuntimeError $exception) {
+            throw new MailerException(
+                message: 'Ошибка отправки уведомления (orderId: ' . $historyOrderStatus->getOrder()?->getId()
+                    . ', statusCode: ' . $historyOrderStatus->getStatus()->getCode() .') ' . $exception->getMessage(),
+                code: ResponseAlias::HTTP_BAD_REQUEST,
+                responseCode: 'SEND_MAIL_ERROR',
+                logLevel: LogLevel::CRITICAL
+            );
+        }
     }
 
     /**
@@ -35,6 +56,10 @@ class OrderStatusMailer
      *
      * @param HistoryOrderStatus $historyOrderStatus
      * @return void
+     * @throws TransportExceptionInterface
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     private function sendNew(HistoryOrderStatus $historyOrderStatus): void
     {
@@ -45,12 +70,13 @@ class OrderStatusMailer
             ->html(
                 $this
                     ->twig
-                    ->load('/Email/new.html.twig')
+                    ->load(self::PATH_TEMPLATE_NEW)
                     ->render(
                         [
                             'storeName' => Aliases::STORE_NAME,
                             'siteUrl' => Aliases::SITE_URL,
                             'year' => (new DateTime())->format('Y'),
+                            'number' => $historyOrderStatus->getOrder()?->getId(),
                             'basket' => $this->createBasketArray($historyOrderStatus->getOrder()),
                             'totalPrice' => $historyOrderStatus->getOrder()?->getTotalPrice()
                         ]
@@ -66,6 +92,10 @@ class OrderStatusMailer
      *
      * @param HistoryOrderStatus $historyOrderStatus
      * @return void
+     * @throws TransportExceptionInterface
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     private function sendInWork(HistoryOrderStatus $historyOrderStatus): void
     {
@@ -76,12 +106,13 @@ class OrderStatusMailer
             ->html(
                 $this
                     ->twig
-                    ->load('/Email/inWork.html.twig')
+                    ->load(self::PATH_TEMPLATE_IN_WORK)
                     ->render(
                         [
                             'storeName' => Aliases::STORE_NAME,
                             'siteUrl' => Aliases::SITE_URL,
                             'year' => (new DateTime())->format('Y'),
+                            'number' => $historyOrderStatus->getOrder()?->getId(),
                             'basket' => $this->createBasketArray($historyOrderStatus->getOrder()),
                             'totalPrice' => $historyOrderStatus->getOrder()?->getTotalPrice()
                         ]
@@ -97,6 +128,10 @@ class OrderStatusMailer
      *
      * @param HistoryOrderStatus $historyOrderStatus
      * @return void
+     * @throws TransportExceptionInterface
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     private function sendCompleted(HistoryOrderStatus $historyOrderStatus): void
     {
@@ -107,12 +142,13 @@ class OrderStatusMailer
             ->html(
                 $this
                     ->twig
-                    ->load('/Email/completed.html.twig')
+                    ->load(self::PATH_TEMPLATE_COMPLETED)
                     ->render(
                         [
                             'storeName' => Aliases::STORE_NAME,
                             'siteUrl' => Aliases::SITE_URL,
                             'year' => (new DateTime())->format('Y'),
+                            'number' => $historyOrderStatus->getOrder()?->getId(),
                             'basket' => $this->createBasketArray($historyOrderStatus->getOrder()),
                             'totalPrice' => $historyOrderStatus->getOrder()?->getTotalPrice()
                         ]

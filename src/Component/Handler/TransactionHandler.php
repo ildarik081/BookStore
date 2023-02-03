@@ -3,11 +3,11 @@
 namespace App\Component\Handler;
 
 use App\Component\Factory\EntityFactory;
+use App\Component\Mailer\OrderStatusMailer;
 use App\Component\Message\SendCompletedOrderMessage;
 use App\Component\Message\SendTransactionMessage;
 use App\Component\Utils\Enum\CheckTypeEnum;
 use App\Component\Utils\Enum\OrderStatusEnum;
-use App\Component\Utils\Postman;
 use App\Repository\CheckTypeRepository;
 use App\Repository\OrderRepository;
 use App\Repository\OrderStatusRepository;
@@ -28,19 +28,21 @@ class TransactionHandler implements MessageHandlerInterface
         private readonly OrderStatusRepository $orderStatusRepository,
         private readonly OrderRepository $orderRepository,
         private readonly CheckTypeRepository $checkTypeRepository,
+        private readonly OrderStatusMailer $orderStatusMailer,
         private readonly MessageBusInterface $bus
     ) {
     }
 
     public function __invoke(SendTransactionMessage $message)
     {
-        $transaction = $this->transactionRepository->find($message->transactionId);
+        $transaction = $this->transactionRepository->find($message->getTransactionId());
         $transaction->setIsActive(false);
 
         $paymentType = $this
             ->paymentTypeRepository
             ->getPaymentTypeByCode($transaction->getOrder()?->getPaymentTypeCode())
         ;
+
         $payment = EntityFactory::createPayment($paymentType, $transaction->getOrder()?->getTotalPrice() ?? 0.0);
         $transaction->setPayment($payment);
 
@@ -54,8 +56,9 @@ class TransactionHandler implements MessageHandlerInterface
         $historyOrderStatus = EntityFactory::createHistoryOrderStatus($orderStatus);
         $transaction->getOrder()?->addHistoryOrderStatus($historyOrderStatus);
         $this->orderRepository->save($transaction->getOrder(), true);
-        Postman::getInstance()->dispatchHistoryOrderStatus($historyOrderStatus);
-        
+
+        $this->orderStatusMailer->sendNotify($historyOrderStatus);
+
         $this->bus->dispatch(new SendCompletedOrderMessage($transaction->getOrder()?->getId()));
     }
 }

@@ -3,10 +3,10 @@
 namespace App\Component\Handler;
 
 use App\Component\Factory\EntityFactory;
+use App\Component\Mailer\OrderStatusMailer;
 use App\Component\Message\SendCompletedOrderMessage;
 use App\Component\Utils\Enum\CheckTypeEnum;
 use App\Component\Utils\Enum\OrderStatusEnum;
-use App\Component\Utils\Postman;
 use App\Entity\Transaction;
 use App\Repository\CheckTypeRepository;
 use App\Repository\OrderRepository;
@@ -23,12 +23,13 @@ class CompletedOrderHandler implements MessageHandlerInterface
         private readonly OrderStatusRepository $orderStatusRepository,
         private readonly OrderRepository $orderRepository,
         private readonly CheckTypeRepository $checkTypeRepository,
+        private readonly OrderStatusMailer $orderStatusMailer
     ) {
     }
 
     public function __invoke(SendCompletedOrderMessage $message)
     {
-        $order = $this->orderRepository->find($message->orderId);
+        $order = $this->orderRepository->find($message->getOrderId());
 
         /** @var Transaction $transaction */
         $transaction = $order
@@ -47,6 +48,7 @@ class CompletedOrderHandler implements MessageHandlerInterface
         $historyOrderStatus = EntityFactory::createHistoryOrderStatus($orderStatus);
         $order->addHistoryOrderStatus($historyOrderStatus);
         $this->orderRepository->save($transaction->getOrder(), true);
-        Postman::getInstance()->dispatchHistoryOrderStatus($historyOrderStatus);
+
+        $this->orderStatusMailer->sendNotify($historyOrderStatus);
     }
 }

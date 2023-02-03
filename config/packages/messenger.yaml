@@ -8,10 +8,26 @@ framework:
 
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
-            send_messenger: '%env(MESSENGER_TRANSPORT_DSN)%'
-            # sync: 'sync://'
+            send_transaction:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    exchange:
+                        name: send_transaction
+                    queues:
+                        send_transaction:
+                            binding_keys:
+                                - send_transaction
+            send_order_completed:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    exchange:
+                        name: send_order_completed
+                    queues:
+                        send_order_completed:
+                            binding_keys:
+                                - send_order_completed
 
         routing:
             # Route your messages to the transports
-            'App\Component\Message\SendTransactionMessage': send_messenger
-            'App\Component\Message\SendCompletedOrderMessage': send_messenger
+            'App\Component\Message\SendTransactionMessage': send_transaction
+            'App\Component\Message\SendCompletedOrderMessage': send_order_completed
