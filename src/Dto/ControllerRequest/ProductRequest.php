@@ -5,7 +5,7 @@ namespace App\Dto\ControllerRequest;
 use JMS\Serializer\Annotation;
 use App\Component\Interface\AbstractDtoControllerRequest;
 use App\Dto\Image;
-use Symfony\Component\Validator\Constraints as Assert; 
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ProductRequest extends AbstractDtoControllerRequest
 {
