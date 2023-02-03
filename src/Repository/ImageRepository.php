@@ -64,4 +64,21 @@ class ImageRepository extends ServiceEntityRepository
 
         return $image;
     }
+
+    /**
+     * Получить массив изображений по их идентификаторам
+     *
+     * @param array $ids
+     * @return Image[]
+     */
+    public function getImagesByIds(array $ids): array
+    {
+        return $this
+            ->createQueryBuilder('i')
+            ->select('i')
+            ->where($this->createQueryBuilder('i')->expr()->in('i.id', ':ids'))
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
+    }
 }

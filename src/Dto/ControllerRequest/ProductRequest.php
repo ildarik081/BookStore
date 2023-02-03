@@ -5,6 +5,7 @@ namespace App\Dto\ControllerRequest;
 use JMS\Serializer\Annotation;
 use App\Component\Interface\AbstractDtoControllerRequest;
 use App\Dto\Image;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ProductRequest extends AbstractDtoControllerRequest
 {
@@ -24,6 +25,7 @@ class ProductRequest extends AbstractDtoControllerRequest
      * @Annotation\Type("float")
      * @Annotation\SerializedName("price")
      */
+    #[Assert\NotBlank(message: 'Параметр price является обязательным')]
     public ?float $price = null;
 
     /**
@@ -33,6 +35,7 @@ class ProductRequest extends AbstractDtoControllerRequest
      * @Annotation\Type("string")
      * @Annotation\SerializedName("title")
      */
+    #[Assert\NotBlank(message: 'Параметр title является обязательным')]
     public ?string $title = null;
 
     /**
@@ -57,10 +60,10 @@ class ProductRequest extends AbstractDtoControllerRequest
      * Ссылка на изображение товара
      *
      * @var Image[]
-     * @Annotation\Type("array")
-     * @Annotation\SerializedName("array<App\Dto\Image>")
+     * @Annotation\Type("array<App\Dto\Image>")
+     * @Annotation\SerializedName("images")
      */
-    public array $image = [];
+    public array $images = [];
 
     /**
      * Ссылка для скачивания
@@ -69,5 +72,6 @@ class ProductRequest extends AbstractDtoControllerRequest
      * @Annotation\Type("string")
      * @Annotation\SerializedName("url")
      */
+    #[Assert\NotBlank(message: 'Параметр url является обязательным')]
     public ?string $url = null;
 }

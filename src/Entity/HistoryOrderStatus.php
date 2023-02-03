@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\HistoryOrderStatusRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * История статусов заказа
  */
 #[ORM\Entity(repositoryClass: HistoryOrderStatusRepository::class)]
-#[ORM\Table(options: ['comment' => 'История статусов заказа'])]
+#[ORM\HasLifecycleCallbacks]
 class HistoryOrderStatus
 {
     #[ORM\Id]
@@ -24,13 +26,18 @@ class HistoryOrderStatus
     ]
     private ?int $id = null;
 
-    #[
-        ORM\ManyToOne(
-            cascade: ['persist']
-        )
-    ]
+    #[ORM\ManyToOne(cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?OrderStatus $status = null;
+
+    #[
+        ORM\Column(
+            type: Types::DATETIME_MUTABLE,
+            nullable: false,
+            options: ['comment' => 'Дата/время изменения статуса заказа']
+        )
+    ]
+    private ?DateTimeInterface $dtCreate = null;
 
     #[
         ORM\ManyToOne(
@@ -93,6 +100,29 @@ class HistoryOrderStatus
     public function setOrder(?Order $order): self
     {
         $this->order = $order;
+
+        return $this;
+    }
+
+    /**
+     * Получить дату/время изменения статуса заказа
+     *
+     * @return DateTimeInterface|null
+     */
+    public function getDtCreate(): ?DateTimeInterface
+    {
+        return $this->dtCreate;
+    }
+
+    /**
+     * Записать дату/время изменения статуса заказа
+     *
+     * @return self
+     */
+    #[ORM\PrePersist]
+    public function setDtCreate(): self
+    {
+        $this->dtCreate = new DateTime();
 
         return $this;
     }

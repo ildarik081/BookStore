@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Component\Exception\RepositoryException;
 use App\Entity\OrderStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 /**
  * @extends ServiceEntityRepository<OrderStatus>
@@ -37,5 +40,27 @@ class OrderStatusRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * Получить статус заказа по коду
+     *
+     * @param string $code
+     * @return OrderStatus
+     */
+    public function getOrderStatusByCode(string $code): OrderStatus
+    {
+        $orderStatus = $this->findOneBy(['code' => $code]);
+
+        if (null === $orderStatus) {
+            throw new RepositoryException(
+                message: 'Не найден статус заказа с кодом: ' . $code,
+                code: ResponseAlias::HTTP_BAD_REQUEST,
+                responseCode: 'ORDER_STATUS_NOT_FOUND',
+                logLevel: LogLevel::CRITICAL
+            );
+        }
+
+        return $orderStatus;
     }
 }

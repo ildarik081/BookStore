@@ -3,10 +3,8 @@
 namespace App\Component\Builder;
 
 use App\Component\Exception\BuilderException;
-use App\Dto\Image as ImageDto;
 use App\Entity\Image;
 use App\Entity\Product;
-use App\Repository\ImageRepository;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
@@ -14,7 +12,6 @@ class ProductBuilder implements BuilderInterface
 {
     private ?Product $existProduct = null;
     private ?Product $result = null;
-    private ?ImageRepository $imageRepository = null;
     private ?float $price = null;
     private ?string $title = null;
     private ?string $description = null;
@@ -42,11 +39,9 @@ class ProductBuilder implements BuilderInterface
             ->setAuthor($this->author)
             ->setUrl($this->url);
 
-        /** @var ImageDto $image */
+        /** @var Image $image */
         foreach ($this->images as $image) {
-            $this->result->addImage(
-                $this->getImage($image)
-            );
+            $this->result->addImage($image);
         }
 
         return $this;
@@ -60,7 +55,6 @@ class ProductBuilder implements BuilderInterface
     public function reset(): ProductBuilder
     {
         $this->existProduct = null;
-        $this->imageRepository = null;
         $this->result = null;
         $this->price = null;
         $this->title = null;
@@ -104,19 +98,6 @@ class ProductBuilder implements BuilderInterface
     public function setExistProduct(?Product $product): ProductBuilder
     {
         $this->existProduct = $product;
-
-        return $this;
-    }
-
-    /**
-     * Добавить ImageRepository
-     *
-     * @param ImageRepository|null $imageRepository
-     * @return ProductBuilder
-     */
-    public function setImageRepository(?ImageRepository $imageRepository): ProductBuilder
-    {
-        $this->imageRepository = $imageRepository;
 
         return $this;
     }
@@ -174,9 +155,9 @@ class ProductBuilder implements BuilderInterface
     }
 
     /**
-     * Добавить изображение
+     * Добавить изображения
      *
-     * @param ImageDto[]|null $images
+     * @param Image[]|null $images
      * @return ProductBuilder
      */
     public function setImage(?array $images): ProductBuilder
@@ -197,25 +178,5 @@ class ProductBuilder implements BuilderInterface
         $this->url = $url;
 
         return $this;
-    }
-
-    /**
-     * Собрать сущность Image
-     *
-     * @param ImageDto $image
-     * @return Image
-     */
-    private function getImage(ImageDto $image): Image
-    {
-        if (null == $this->imageRepository) {
-            throw new BuilderException(
-                message: 'Не вызван метод setImageRepository()',
-                code: ResponseAlias::HTTP_BAD_REQUEST,
-                responseCode: 'METHOD_SET_IMAGE_REPOSITORY_NOT_FOUND',
-                logLevel: LogLevel::CRITICAL
-            );
-        }
-
-        return $this->imageRepository->getImageById($image->id);
     }
 }

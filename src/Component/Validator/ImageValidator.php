@@ -6,7 +6,6 @@ use App\Component\Exception\ValidatorException;
 use App\Component\Utils\Aliases;
 use Symfony\Component\HttpFoundation\Request;
 use Psr\Log\LogLevel;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class ImageValidator

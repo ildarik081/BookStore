@@ -8,9 +8,12 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Статус заказа
+ *
+ * - new - _новый заказ_
+ * - inWork - _в работе_
+ * - completed - _завершен_
  */
 #[ORM\Entity(repositoryClass: OrderStatusRepository::class)]
-#[ORM\Table(options: ['comment' => 'Справочник статусов заказа'])]
 class OrderStatus
 {
     #[ORM\Id]
@@ -47,7 +50,7 @@ class OrderStatus
     #[
         ORM\Column(
             type: Types::STRING,
-            length: 10,
+            length: 20,
             nullable: false,
             options: ['comment' => 'Код статуса']
         )

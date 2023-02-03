@@ -10,6 +10,9 @@ class Aliases
     public const METHOD_PUT = 'PUT';
     public const METHOD_DELETE = 'DELETE';
 
+    public const STORE_NAME = 'Книжная лавка';
+    public const SITE_URL = 'http://localhost/';
+
     /** Формат даты */
     public const D_FORMAT = 'd.m.Y';
 
@@ -31,15 +34,51 @@ class Aliases
             'description' => 'Новый заказ',
             'code' => 'new',
         ],
-        'in_work' => [
+        'inWork' => [
             'value' => 'В работе',
             'description' => 'Собирается заказ',
-            'code' => 'in_work',
+            'code' => 'inWork',
         ],
         'completed' => [
             'value' => 'Завершен',
             'description' => 'Завершенный заказ',
             'code' => 'completed',
+        ]
+    ];
+
+    public const PAYMENT_TYPE = [
+        'card' => [
+            'value' => 'Банковской картой онлайн',
+            'description' => 'Оплата заказа с помощью банковской карты, через форму оплаты на сайте',
+            'code' => 'card'
+        ],
+        'sbp' => [
+            'value' => 'СБП',
+            'description' => 'Оплата заказа через систему безопасных платежей',
+            'code' => 'sbp'
+        ]
+    ];
+
+    public const CHECK_TYPE = [
+        'advance' => [
+            'value' => 'Авансовый чек',
+            'description' => 'Авансовый чек',
+            'code' => 'advance'
+        ],
+        'refundAdvance' => [
+            'value' => 'Возврат аванса',
+            'description' => 'Возврат аванса',
+            'code' => 'refundAdvance'
+        ],
+        'fullSettlement' => [
+            'value' => 'Чек полного расчета',
+            'description' => 'Чек полного расчета',
+            'code' => 'fullSettlement'
+        ],
+        'refundFullSettlement' => [
+            'value' => 'Возврат полного расчета',
+            'description' => 'Возврат полного расчета',
+            'code' => 'refundFullSettlement'
         ]
     ];
 }

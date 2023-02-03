@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Component\Interface\ProductInterface;
 use App\Repository\CartProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,8 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Товары в корзине
  */
 #[ORM\Entity(repositoryClass: CartProductRepository::class)]
-#[ORM\Table(options: ['comment' => 'Товары в корзине'])]
-class CartProduct
+class CartProduct implements ProductInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue('IDENTITY')]

@@ -2,7 +2,6 @@
 
 namespace App\Dto;
 
-use App\Component\Interface\Controller\ControllerRequestInterface;
 use App\Component\Interface\Controller\ControllerResponseInterface;
 use JMS\Serializer\Annotation;
 use App\Dto\Image;

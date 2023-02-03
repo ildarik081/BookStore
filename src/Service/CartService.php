@@ -8,6 +8,7 @@ use App\Component\Exception\CartException;
 use App\Component\Exception\RepositoryException;
 use App\Component\Factory\EntityFactory;
 use App\Component\Factory\SimpleResponseFactory;
+use App\Component\Interface\ProductInterface;
 use App\Dto\ControllerRequest\BaseRequest;
 use App\Dto\ControllerRequest\ProductCartRequest;
 use App\Dto\ControllerResponse\CartResponse;
@@ -169,8 +170,8 @@ class CartService
         $cartProduct = $cart
             ->getCartProducts()
             ->filter(
-                function (CartProduct $cartProduct) use ($id) {
-                    return $cartProduct->getProduct()->getId() === $id;
+                function (ProductInterface $cartProduct) use ($id) {
+                    return $cartProduct->getProduct()?->getId() === $id;
                 }
             )
             ->first();

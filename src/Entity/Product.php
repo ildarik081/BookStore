@@ -9,9 +9,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Товар
+ */
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ORM\Table(options: ['comment' => 'Товары'])]
-#[ORM\Index(name: 'product_titlex', columns: ['title'])]
 class Product
 {
     #[ORM\Id]
@@ -213,9 +214,9 @@ class Product
     }
 
     /**
-     * Получить коолекцию изображений товара
+     * Получить коллекцию изображений товара
      *
-     * @return Collection
+     * @return Collection<int, Image>
      */
     public function getImages(): Collection
     {

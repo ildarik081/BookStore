@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use App\Component\Interface\ProductInterface;
 use App\Repository\OrderRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,10 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Заказ
  */
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
-#[ORM\Table(
-    name: '`order`',
-    options: ['comment' => 'Заказы']
-)]
+#[ORM\Table(name: '`order`')]
 #[ORM\HasLifecycleCallbacks]
 class Order
 {
@@ -55,9 +54,19 @@ class Order
 
     #[
         ORM\Column(
+            type: Types::STRING,
+            nullable: false,
+            length: 10,
+            options: ['comment' => 'Код типа оплаты']
+        )
+    ]
+    private ?string $paymentTypeCode = null;
+
+    #[
+        ORM\Column(
             type: Types::DATETIME_MUTABLE,
             nullable: false,
-            options: ['comment' => 'Дата создания заказа']
+            options: ['comment' => 'Дата/время создания заказа']
         )
     ]
     private ?DateTimeInterface $dtCreate = null;
@@ -81,7 +90,15 @@ class Order
     ]
     private Collection $orderProduct;
 
-    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[
+        ORM\OneToMany(
+            mappedBy: 'order',
+            targetEntity: Transaction::class
+        )
+    ]
+    private ?Collection $transaction = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Recipient $recipient = null;
 
@@ -89,6 +106,7 @@ class Order
     {
         $this->historyOrderStatus = new ArrayCollection();
         $this->orderProduct = new ArrayCollection();
+        $this->transaction = new ArrayCollection();
     }
 
     /**
@@ -148,6 +166,29 @@ class Order
     }
 
     /**
+     * Получить код типа оплаты
+     *
+     * @return string|null
+     */
+    public function getPaymentTypeCode(): ?string
+    {
+        return $this->paymentTypeCode;
+    }
+
+    /**
+     * Записать код типа оплаты
+     *
+     * @param string $paymentTypeCode
+     * @return self
+     */
+    public function setPaymentTypeCode(string $paymentTypeCode): self
+    {
+        $this->paymentTypeCode = $paymentTypeCode;
+
+        return $this;
+    }
+
+    /**
      * Получить дату создания заказа
      *
      * @return DateTimeInterface|null
@@ -160,13 +201,12 @@ class Order
     /**
      * Записать дату создания заказа
      *
-     * @param DateTimeInterface $dtCreate
      * @return self
      */
     #[ORM\PrePersist]
-    public function setDtCreate(DateTimeInterface $dtCreate): self
+    public function setDtCreate(): self
     {
-        $this->dtCreate = $dtCreate;
+        $this->dtCreate = new DateTime();
 
         return $this;
     }
@@ -174,7 +214,7 @@ class Order
     /**
      * Получить историю статусов заказа
      *
-     * @return Collection
+     * @return Collection<int, HistoryOrderStatus>
      */
     public function getHistoryOrderStatus(): Collection
     {
@@ -217,7 +257,7 @@ class Order
     /**
      * Получить товары заказа
      *
-     * @return Collection
+     * @return Collection<int, ProductInterface>
      */
     public function getOrderProduct(): Collection
     {
@@ -258,6 +298,49 @@ class Order
     }
 
     /**
+     * Получить массив транзакций
+     *
+     * @return Collection<int, Transaction>
+     */
+    public function getTransaction(): ?Collection
+    {
+        return $this->transaction;
+    }
+
+    /**
+     * Добавить транзакцию
+     *
+     * @param Transaction|null $transaction
+     * @return self
+     */
+    public function addTransaction(?Transaction $transaction): self
+    {
+        if (!$this->transaction->contains($transaction)) {
+            $this->transaction->add($transaction);
+            $transaction->setOrder($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Удалить транзакцию
+     *
+     * @param Transaction $transaction
+     * @return self
+     */
+    public function removeTransaction(Transaction $transaction): self
+    {
+        if ($this->transaction->removeElement($transaction)) {
+            if ($transaction->getOrder() === $this) {
+                $transaction->setOrder(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Получить информацию о получателе
      *
      * @return Recipient|null
@@ -268,12 +351,12 @@ class Order
     }
 
     /**
-     * Записать информацию о получателе
+     * Заполнить информацию о получателе
      *
-     * @param Recipient|null $recipient
+     * @param Recipient $recipient
      * @return self
      */
-    public function setRecipient(?Recipient $recipient): self
+    public function setRecipient(Recipient $recipient): self
     {
         $this->recipient = $recipient;
 
