@@ -35,15 +35,16 @@ class OrderStatusMailer
     public function sendNotify(HistoryOrderStatus $historyOrderStatus): void
     {
         try {
-            match ($historyOrderStatus->getStatus()->getCode()) {
-                OrderStatusEnum::New->value => $this->sendNew($historyOrderStatus),
+            match ($historyOrderStatus->getStatus()?->getCode()) {
+                OrderStatusEnum::NewOrder->value => $this->sendNew($historyOrderStatus),
                 OrderStatusEnum::InWork->value => $this->sendInWork($historyOrderStatus),
-                OrderStatusEnum::Completed->value => $this->sendCompleted($historyOrderStatus)
+                OrderStatusEnum::Completed->value => $this->sendCompleted($historyOrderStatus),
+                default => throw new MailerException('Не известный статус заказа')
             };
         } catch (TransportExceptionInterface | LoaderError | RuntimeError | RuntimeError $exception) {
             throw new MailerException(
                 message: 'Ошибка отправки уведомления (orderId: ' . $historyOrderStatus->getOrder()?->getId()
-                    . ', statusCode: ' . $historyOrderStatus->getStatus()->getCode() .') ' . $exception->getMessage(),
+                    . ', statusCode: ' . $historyOrderStatus->getStatus()->getCode() . ') ' . $exception->getMessage(),
                 code: ResponseAlias::HTTP_BAD_REQUEST,
                 responseCode: 'SEND_MAIL_ERROR',
                 logLevel: LogLevel::CRITICAL
@@ -66,7 +67,7 @@ class OrderStatusMailer
         $email = (new Email())
             ->from($this->emailFrom)
             ->to($historyOrderStatus->getOrder()?->getRecipient()?->getEmail())
-            ->subject(OrderStatusEnum::New->getSubject($historyOrderStatus->getOrder()?->getId()))
+            ->subject(OrderStatusEnum::NewOrder->getSubject($historyOrderStatus->getOrder()?->getId()))
             ->html(
                 $this
                     ->twig

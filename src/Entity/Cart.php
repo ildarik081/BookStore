@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Component\Interface\ProductInterface;
 use App\Repository\CartRepository;
 use DateTime;
 use DateTimeInterface;
@@ -152,7 +153,7 @@ class Cart
     /**
      * Получить массив товаров в корзине
      *
-     * @return Collection<int, CartProduct>
+     * @return Collection<int, ProductInterface>
      */
     public function getCartProducts(): Collection
     {

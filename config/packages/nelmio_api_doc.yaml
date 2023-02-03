@@ -15,8 +15,6 @@ nelmio_api_doc:
           description: Ручки для работы с корзиной
         - name: Order
           description: Ручки для работы с заказом
-        - name: Search
-          description: Ручки для поиска по товарам
     areas:
         path_patterns: 
             - ^/api(?!/doc$)

@@ -69,7 +69,7 @@ class ProductService
             ->setUrl($request->url)
             ->setDescription($request->description)
             ->setAuthor($request->author)
-            ->setImage($this->getImages($request->image))
+            ->setImage($this->getImages($request->images))
             ->build()
             ->getResult();
 
@@ -98,7 +98,7 @@ class ProductService
             ->setUrl($request->url)
             ->setDescription($request->description)
             ->setAuthor($request->author)
-            ->setImage($this->getImages($request->image))
+            ->setImage($this->getImages($request->images))
             ->build()
             ->getResult();
 

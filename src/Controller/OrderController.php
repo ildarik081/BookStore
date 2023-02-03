@@ -8,6 +8,7 @@ use App\Dto\ControllerRequest\BaseRequest;
 use App\Dto\ControllerRequest\CheckoutRequest;
 use App\Dto\ControllerResponse\AcquiringResponse;
 use App\Dto\ControllerResponse\BaseResponse;
+use App\Dto\ControllerResponse\OrderListResponse;
 use App\Dto\ControllerResponse\SuccessResponse;
 use App\Entity\Order;
 use App\Service\OrderService;
@@ -76,7 +77,7 @@ class OrderController extends AbstractController
      *      @Model(type=AcquiringResponse::class)
      * )
      * @OA\Tag(name="Order")
-     * @param CheckoutRequest $request
+     * @param Order $order
      * @return AcquiringResponse
      */
     #[Route('/create-transaction/{id}', name: 'create_transaction', methods: ['GET'])]
@@ -88,22 +89,18 @@ class OrderController extends AbstractController
     /**
      * Список заказов
      *
-     * @OA\RequestBody(
-     *    description="",
-     *    @Model(type=BaseRequest::class)
-     * )
      * @OA\Response(
      *      response=200,
-     *      description="",
-     *      @Model(type=BaseResponse::class)
+     *      description="Список заказов",
+     *      @Model(type=OrderListResponse::class)
      * )
      * @OA\Tag(name="Order")
      * @param BaseRequest $request
-     * @return BaseResponse
+     * @return OrderListResponse
      */
-    #[Route('/list', name: 'list', methods: ['GET'])]
-    public function list(BaseRequest $request): BaseResponse
+    #[Route('/list', name: 'order_list', methods: ['GET'])]
+    public function getOrderList(BaseRequest $request): OrderListResponse
     {
-        return new BaseResponse();
+        return $this->orderService->getOrderList($request);
     }
 }

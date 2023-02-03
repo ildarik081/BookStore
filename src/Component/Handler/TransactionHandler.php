@@ -33,7 +33,7 @@ class TransactionHandler implements MessageHandlerInterface
     ) {
     }
 
-    public function __invoke(SendTransactionMessage $message)
+    public function __invoke(SendTransactionMessage $message): void
     {
         $transaction = $this->transactionRepository->find($message->getTransactionId());
         $transaction->setIsActive(false);

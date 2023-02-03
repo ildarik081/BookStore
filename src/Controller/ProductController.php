@@ -83,8 +83,6 @@ class ProductController extends AbstractController
     #[Route('/add', name: 'add', methods: ['POST'])]
     public function add(ProductRequest $request): Product
     {
-        ProductDtoValidator::validateProductRequest($request);
-
         return $this->productService->addProduct($request);
     }
 
@@ -112,8 +110,6 @@ class ProductController extends AbstractController
     #[Route('/edit', name: 'edit', methods: ['PUT'])]
     public function edit(ProductRequest $request): Product
     {
-        ProductDtoValidator::validateProductRequest($request);
-
         return $this->productService->editProduct($request);
     }
 

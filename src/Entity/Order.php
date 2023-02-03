@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Component\Interface\ProductInterface;
 use App\Repository\OrderRepository;
 use DateTime;
 use DateTimeInterface;
@@ -256,7 +257,7 @@ class Order
     /**
      * Получить товары заказа
      *
-     * @return Collection<int, OrderProduct>
+     * @return Collection<int, ProductInterface>
      */
     public function getOrderProduct(): Collection
     {

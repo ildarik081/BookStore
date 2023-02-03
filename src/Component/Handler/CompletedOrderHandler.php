@@ -27,7 +27,7 @@ class CompletedOrderHandler implements MessageHandlerInterface
     ) {
     }
 
-    public function __invoke(SendCompletedOrderMessage $message)
+    public function __invoke(SendCompletedOrderMessage $message): void
     {
         $order = $this->orderRepository->find($message->getOrderId());
 

@@ -2,8 +2,6 @@
 
 namespace App\Command;
 
-use App\Entity\Payment;
-use App\Repository\CartRepository;
 use App\Repository\PaymentCheckRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -30,9 +28,14 @@ class FiscalCheckCommand extends Command
     {
         $inputOutput = new SymfonyStyle($input, $output);
 
-        $checks = $this->paymentCheckRepository->findBy(['isActive' => true]);
+        $this->paymentCheckRepository->findBy(['isActive' => true]);
 
         //todo Тут можно прикрутить фискализацию чеков по крону
+
+        // foreach ($checks as $check) {
+
+        // }
+
 
         $inputOutput->success('Чеки успешно фискализованы');
 
