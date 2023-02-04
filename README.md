@@ -1,19 +1,20 @@
 # Книжный магазин
 
-## Пример работы интернет магазина
-
 ### Функционал
 
-- Получение товара;
-- Наполение корзины;
+- Наполнение магазина товаром;
+- Наполнение корзины;
 - Оформление заказа;
+- Получение книг в электронном варианте на email через брокер сообщений;
+- Возможность подключения эквайрингов;
+- Возможность фискализации.
 
 ### Технологический стэк
 
-- php 8.1
-- postgres 13
-- symfony 5.4
-- rabbitmq
+- PHP 8.1
+- PostgreSQL 13
+- Symfony 6.0
+- RabbitMQ 3.11.2
 
 ### Install
 
@@ -23,46 +24,40 @@ docker-compose up
 ```
 2. Зайти в контейнер
 ```bash
-docker exec -it app /bin/bash
+docker exec -it app sh
 ```
-3. Установить зависимости
+3. В контейнере установить зависимости
 ```bash
 composer ins
 ```
-4. Накатить миграции
+4. Загрузить миграции
 ```bash
 php bin/console doctrine:migrations:migrate
 ```
-5. Накатить фикстуры
+5. Загрузить фикстуры
 ```bash
 php bin/console doctrine:fixtures:load
 ```
+6. Запустить ворекры
+```bash
+php bin/console messenger:consume send_transaction
+php bin/console messenger:consume send_order_completed
+```
 6. Зайти в swagger по адресу http://127.0.0.1/api/doc
+7. *Для фискализации требуется включить command
+```bash
+php bin/console app:fiscal-check
+```
 
-### Тесты
+### Схема БД
 
-1. Зайти в контейнер
-```bash
-docker exec -it app /bin/bash
-```
-2. Накатить миграции (первый запуск)
-```bash
-php bin/console doctrine:migrations:migrate --env=test
-```
-3. Накатить фикстуры (первый запуск)
-```bash
-php bin/console doctrine:fixtures:load --env=test
-```
-4. Запустить unit тесты
-```bash
-make test
-```
+![DB](file/order-db.png)
 
 ### PHPSTAN
 
 1. Зайти в контейнер
 ```bash
-docker exec -it app /bin/bash
+docker exec -it app sh
 ```
 2. Запустить phpstan
 ```bash
@@ -73,9 +68,31 @@ make phpstan
 
 1. Зайти в контейнер
 ```bash
-docker exec -it app /bin/bash
+docker exec -it app sh
 ```
 2. Запустить phpstan
 ```bash
 make phpmd
+```
+
+### PHPCS
+
+1. Зайти в контейнер
+```bash
+docker exec -it app sh
+```
+2. Запустить phpcs
+```bash
+make phpcs
+```
+
+### Psalm
+
+1. Зайти в контейнер
+```bash
+docker exec -it app sh
+```
+2. Запустить psalm
+```bash
+make psalm
 ```
